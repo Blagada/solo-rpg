@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cmt024d4nejhd"]
+
+[ext_resource type="Script" uid="uid://cwadid1wexfbh" path="res://scripts/network/gemini_client.gd" id="1_o8f3j"]
+
+[node name="GeminiClient" type="Node2D" unique_id=499475038]
+script = ExtResource("1_o8f3j")
+
+[node name="APIRequest" type="HTTPRequest" parent="." unique_id=1657209936]
+
+[connection signal="request_completed" from="APIRequest" to="." method="_on_api_request_request_completed"]

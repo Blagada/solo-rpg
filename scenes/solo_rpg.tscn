@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://do1y1ihpsywiu"]
+
+[ext_resource type="Script" uid="uid://dmkr1owohtgi0" path="res://scripts/core/game_manager.gd" id="1_4i3hq"]
+[ext_resource type="Script" uid="uid://dwhif1yiplivo" path="res://scripts/ui/ui_controller.gd" id="2_5hdv6"]
+[ext_resource type="PackedScene" uid="uid://cmt024d4nejhd" path="res://scenes/Components/gemini_client.tscn" id="2_amrf6"]
+[ext_resource type="Script" uid="uid://b3y37htt7mhq" path="res://scripts/core/prompt_manager.gd" id="4_i1xcm"]
+
+[node name="SOLO_RPG" type="Control" unique_id=677726178]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_4i3hq")
+
+[node name="MainLayout" type="VBoxContainer" parent="." unique_id=168924610]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.5
+offset_top = -4.0
+offset_right = 0.5
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_5hdv6")
+metadata/_edit_use_anchors_ = true
+
+[node name="HistoryScroll" type="ScrollContainer" parent="MainLayout" unique_id=1159377877]
+layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 2
+scroll_hint_mode = 3
+
+[node name="ChatDisplay" type="RichTextLabel" parent="MainLayout/HistoryScroll" unique_id=1215615774]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+
+[node name="LoadLabel" type="Label" parent="MainLayout" unique_id=538104528]
+visible = false
+layout_mode = 2
+text = "..."
+
+[node name="InputLayout" type="HBoxContainer" parent="MainLayout" unique_id=1247312954]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="InputText" type="LineEdit" parent="MainLayout/InputLayout" unique_id=728962959]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SendButton" type="Button" parent="MainLayout/InputLayout" unique_id=125712990]
+layout_mode = 2
+text = "Envoyer"
+
+[node name="GeminiClient" parent="." unique_id=499475038 instance=ExtResource("2_amrf6")]
+
+[node name="PromptManager" type="Node2D" parent="." unique_id=1291331343]
+script = ExtResource("4_i1xcm")
+
+[connection signal="text_submitted" from="MainLayout/InputLayout/InputText" to="." method="_on_input_text_text_submitted"]
+[connection signal="pressed" from="MainLayout/InputLayout/SendButton" to="." method="_on_send_button_pressed"]

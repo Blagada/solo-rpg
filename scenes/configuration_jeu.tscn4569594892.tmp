@@ -1,0 +1,124 @@
+[gd_scene format=3 uid="uid://dhb62ydp37qe7"]
+
+[ext_resource type="Script" uid="uid://75f0fymcwvcj" path="res://scripts/ui/configuration_jeu.gd" id="1_666r0"]
+
+[node name="ConfigurationJeu" type="Control" unique_id=814143050]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_666r0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=828065029]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -247.0
+offset_right = 247.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="UITitle" type="Label" parent="VBoxContainer" unique_id=1407900789]
+layout_mode = 2
+text = "Configuration de la nouvelle partie"
+
+[node name="Univers" type="HBoxContainer" parent="VBoxContainer" unique_id=1750016145]
+layout_mode = 2
+
+[node name="UniversLabel" type="Label" parent="VBoxContainer/Univers" unique_id=1782085781]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Univers"
+
+[node name="UniversOptions" type="OptionButton" parent="VBoxContainer/Univers" unique_id=1763180412]
+layout_mode = 2
+item_count = 5
+popup/item_0/text = "Post apocalyptique"
+popup/item_0/id = 0
+popup/item_1/text = "Cosy artisanale"
+popup/item_1/id = 1
+popup/item_2/text = "Médieval fantastique"
+popup/item_2/id = 2
+popup/item_3/text = "Science fiction"
+popup/item_3/id = 3
+popup/item_4/text = "Horreur psychologique"
+popup/item_4/id = 4
+
+[node name="Précisions" type="Label" parent="VBoxContainer" unique_id=978376736]
+layout_mode = 2
+text = "Précisions (optionel)"
+
+[node name="UniversPrecision" type="LineEdit" parent="VBoxContainer" unique_id=919295324]
+layout_mode = 2
+placeholder_text = "p. ex : Brumeux, sous la mer"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1931636718]
+layout_mode = 2
+
+[node name="Gender" type="HBoxContainer" parent="VBoxContainer" unique_id=889804634]
+layout_mode = 2
+
+[node name="SpecificiteLabel" type="Label" parent="VBoxContainer/Gender" unique_id=1344750117]
+layout_mode = 2
+text = "Spécificité de ton personnage"
+
+[node name="GenderOptions" type="OptionButton" parent="VBoxContainer/Gender" unique_id=1646137700]
+layout_mode = 2
+size_flags_horizontal = 10
+item_count = 4
+popup/item_0/text = "Genre"
+popup/item_0/id = 3
+popup/item_0/disabled = true
+popup/item_0/separator = true
+popup/item_1/text = "Féminin"
+popup/item_1/id = 0
+popup/item_2/text = "Masculin"
+popup/item_2/id = 1
+popup/item_3/text = "Autre"
+popup/item_3/id = 2
+
+[node name="Age" type="HBoxContainer" parent="VBoxContainer" unique_id=1825334922]
+layout_mode = 2
+
+[node name="AgeLabel" type="Label" parent="VBoxContainer/Age" unique_id=651082631]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Âge"
+
+[node name="AgeInput" type="SpinBox" parent="VBoxContainer/Age" unique_id=762137562]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer" unique_id=1490398387]
+layout_mode = 2
+
+[node name="Tarot" type="HBoxContainer" parent="VBoxContainer" unique_id=1081514238]
+layout_mode = 2
+
+[node name="TarotLabel" type="Label" parent="VBoxContainer/Tarot" unique_id=1830759162]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Type de tarot"
+
+[node name="TarotOptions" type="OptionButton" parent="VBoxContainer/Tarot" unique_id=110897620]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Tarot de Marceille"
+popup/item_0/id = 0
+popup/item_1/text = "Tarot Egyptien"
+popup/item_1/id = 1
+
+[node name="TarotCheck" type="CheckButton" parent="VBoxContainer" unique_id=1963708760]
+layout_mode = 2
+text = "Laisser le maître du jeu tirer les cartes"
+
+[node name="Start" type="Button" parent="VBoxContainer" unique_id=1568605110]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Démarrer"
+
+[connection signal="pressed" from="VBoxContainer/Start" to="." method="_on_start_pressed"]

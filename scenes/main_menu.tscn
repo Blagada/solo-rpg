@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://sfti4yvp3s7u"]
+
+[ext_resource type="Script" uid="uid://cntxvhrx00518" path="res://scripts/ui/main_menu.gd" id="1_l6cm7"]
+
+[node name="MainMenu" type="Control" unique_id=131185639]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l6cm7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2068015739]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -227.0
+offset_right = 227.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="VBoxContainer" unique_id=993764574]
+layout_mode = 2
+text = "Solo RPG"
+horizontal_alignment = 1
+
+[node name="Continue" type="Button" parent="VBoxContainer" unique_id=1323868778]
+layout_mode = 2
+disabled = true
+text = "Continuer"
+
+[node name="New" type="Button" parent="VBoxContainer" unique_id=1177984222]
+layout_mode = 2
+text = "Nouvelle partie"
+
+[node name="NewRandom" type="Button" parent="VBoxContainer" unique_id=1206021045]
+layout_mode = 2
+text = "Nouvelle partie aléatoire"
+
+[node name="Load" type="Button" parent="VBoxContainer" unique_id=113602868]
+layout_mode = 2
+text = "Charger"
+
+[node name="Exit" type="Button" parent="VBoxContainer" unique_id=1970429709]
+layout_mode = 2
+text = "Quitter"
+
+[connection signal="pressed" from="VBoxContainer/New" to="." method="_on_new_pressed"]
+[connection signal="pressed" from="VBoxContainer/NewRandom" to="." method="_on_new_random_pressed"]
+[connection signal="pressed" from="VBoxContainer/Exit" to="." method="_on_exit_pressed"]
