@@ -12,7 +12,6 @@ Sois poétique mais concis, clair et va droit au but."""
 
 const REGLES_JEU = """Règles de jeu :
 - Le joueur incarne un personnage défini (âge, genre, univers).
-- Le système de Tarot influence directement la narration : interprète la carte selon le tarot choisi pour générer la suite de l'aventure.
 - Une fois une information établie (nom, âge, contexte), elle est immuable. Ne change jamais ces faits."""
 
 const DIRECTIVES_NARRATIVES = """Directives narratives strictes :
@@ -22,24 +21,34 @@ const DIRECTIVES_NARRATIVES = """Directives narratives strictes :
 - Évitement de répétition : Ne décris pas deux fois le même état. Si le joueur a crié, décris la réaction du monde à ce cri.
 - Si le joueur ne donne pas d'instruction claire, ne t'arrête jamais. Propose une péripétie ou un rebondissement pour maintenir le rythme.
 - Si le joueur te pose une question, réponds-y pour faire avancer l'histoire.
+- À la fin de ta réponse, le joueur doit avoir des options d'actions disponibles.
+- L'histoire doit pouvoir se terminer en maximum 4 réponses.
 """
+
+const DIRECTIVES_TAROT = """Mécanique du Tarot :
+- Un tirage n'a lieu qu'aux moments charnières de l'histoire : arrivée dans un lieu clé, rencontre déterminante, choix important, obstacle majeur. Jamais à chaque message anodin.
+- %s
+- Quand un tirage a lieu, nomme explicitement la carte dans ta narration (ex : "La carte du Fou apparaît...").
+- Interprète le sens réel de la carte selon le tarot choisi (précisé plus bas) et fais-en découler un effet concret sur la suite de l'histoire — une carte annonçant un renversement doit se traduire par un vrai retournement de situation, pas une mention décorative sans suite.
+- Si le champ "etat" contient déjà une carte récente encore pertinente, tiens-en compte pour rester cohérent plutôt que de l'ignorer."""
 
 const FORMAT_REPONSE = """Format de réponse OBLIGATOIRE : réponds UNIQUEMENT avec un objet JSON valide, sans aucun texte avant ou après, de cette forme exacte :
 {"narration": "ton texte narratif pour le joueur ici", "etat": "résumé condensé et autonome de la situation actuelle"}
 
 Règles pour le champ "etat" :
-- Doit rester complet et autonome : lieu actuel, objets importants en possession, PNJ rencontrés et leur relation avec le joueur, objectif ou quête en cours, faits immuables déjà établis (nom, âge, métier).
-- Reprends et fais évoluer l'état précédent fourni ci-dessous ; n'oublie jamais un fait déjà établi, ajoute les nouveaux.
-- Reste concis : 3-5 phrases maximum, uniquement les faits utiles à la cohérence future, pas de prose."""
+- Ne répète JAMAIS l'âge, le genre ou l'univers du personnage : ces informations sont déjà fournies séparément ci-dessous, inutile de les reformuler.
+- Concentre-toi uniquement sur ce qui a été découvert ou a changé en jeu : lieu actuel, objets importants en possession, PNJ rencontrés et leur relation avec le joueur, objectif ou quête en cours, événements marquants récents.
+- Reprends et fais évoluer l'état précédent fourni ci-dessous ; n'oublie jamais un fait de jeu déjà établi, ajoute les nouveaux, retire ceux devenus obsolètes.
+- Reste concis : 2-4 phrases maximum, uniquement les faits utiles à la cohérence future, pas de prose."""
 
 # --- FONCTIONS ---
 
-func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur: int, tarot: String, tirage_auto: bool) -> String:
+func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur: int, tarot: String, tirage_auto: bool, etat_partie: String) -> String:
 	var mode_tirage = "L'IA tire les cartes automatiquement." if tirage_auto else "Le joueur tire ses propres cartes et te les communique."
-	var etat_affiche = GameData.etat_partie if GameData.etat_partie != "" else "Aucun événement encore. L'aventure commence."
+	var etat_affiche = etat_partie if etat_partie != "" else "Aucun événement encore. L'aventure commence."
 
 	# Assemblage du prompt via les constantes
-	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + FORMAT_REPONSE + """
+	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + (DIRECTIVES_TAROT % mode_tirage) + "\n\n" + FORMAT_REPONSE + """
 	
 	Paramètres de la partie :
 	- Personnage : %d ans, %s.
@@ -59,19 +68,21 @@ func generer_system_prompt(univers: String, precision: String, genre: String, ag
 
 	return resultat
 
-func construire_contenu(historique_joueur: Array, system_prompt: String) -> Array:
-	var contenu = [
-		{"role": "user", "parts": [{"text": "SYSTEM_INSTRUCTION: " + system_prompt + 
-		"\n\nCOMMENCE L'AVENTURE MAINTENANT. Plonge directement dans l'action."}]}
-	]
-	
-	# On garde les 6 derniers messages (3 tours de jeu)
-	# Cela donne assez de contexte pour ne pas oublier le nom,
-	# mais pas assez pour créer une boucle répétitive.
-	var taille = historique_joueur.size()
-	var depart = max(0, taille - 6) 
-	
-	for i in range(depart, taille):
-		contenu.append(historique_joueur[i])
-		
+func construire_contenu(historique_joueur: Array) -> Array:
+	# Format neutre : chaque client (gemini_client, claude_client) traduit
+	# ensuite vers son propre format juste avant l'envoi.
+	var contenu = []
+
+	if historique_joueur.is_empty():
+		# Premier tour : rien à raconter encore, on donne le coup d'envoi.
+		contenu.append({"role": "user", "text": "COMMENCE L'AVENTURE MAINTENANT. Plonge directement dans l'action."})
+	else:
+		# On garde les 6 derniers messages (3 tours de jeu) pour éviter les
+		# boucles répétitives ; l'état persistant (GameData.etat_partie)
+		# compense la perte de l'historique plus ancien.
+		var taille = historique_joueur.size()
+		var depart = max(0, taille - 4)  # 4 messages = 2 tours
+		for i in range(depart, taille):
+			contenu.append(historique_joueur[i])
+
 	return contenu
