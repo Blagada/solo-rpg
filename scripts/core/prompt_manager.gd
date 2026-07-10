@@ -24,23 +24,40 @@ const DIRECTIVES_NARRATIVES = """Directives narratives strictes :
 - Si le joueur te pose une question, réponds-y pour faire avancer l'histoire.
 """
 
+const FORMAT_REPONSE = """Format de réponse OBLIGATOIRE : réponds UNIQUEMENT avec un objet JSON valide, sans aucun texte avant ou après, de cette forme exacte :
+{"narration": "ton texte narratif pour le joueur ici", "etat": "résumé condensé et autonome de la situation actuelle"}
+
+Règles pour le champ "etat" :
+- Doit rester complet et autonome : lieu actuel, objets importants en possession, PNJ rencontrés et leur relation avec le joueur, objectif ou quête en cours, faits immuables déjà établis (nom, âge, métier).
+- Reprends et fais évoluer l'état précédent fourni ci-dessous ; n'oublie jamais un fait déjà établi, ajoute les nouveaux.
+- Reste concis : 3-5 phrases maximum, uniquement les faits utiles à la cohérence future, pas de prose."""
+
 # --- FONCTIONS ---
 
-func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur, tarot: String, tirage_auto: bool) -> String:
+func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur: int, tarot: String, tirage_auto: bool) -> String:
 	var mode_tirage = "L'IA tire les cartes automatiquement." if tirage_auto else "Le joueur tire ses propres cartes et te les communique."
-	
+	var etat_affiche = GameData.etat_partie if GameData.etat_partie != "" else "Aucun événement encore. L'aventure commence."
+
 	# Assemblage du prompt via les constantes
-	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + """
+	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + FORMAT_REPONSE + """
 	
 	Paramètres de la partie :
-	- Personnage : %s ans, %s.
+	- Personnage : %d ans, %s.
 	- Accords : Accorde tout au %s.
 	- Tarot : %s.
 	- Mode : %s.
 	- Univers : %s (%s).
-	"""
 	
-	return template % [str(age_joueur), genre, genre, tarot, mode_tirage, univers, precision]
+	État actuel de la partie (à faire évoluer, ne jamais ignorer) :
+	%s
+	"""
+	var resultat = template % [age_joueur, genre, genre, tarot, mode_tirage, univers, precision, etat_affiche]
+
+	print("--- ÉTAT INJECTÉ DANS LE PROMPT ---")
+	print(etat_affiche)
+	print("------------------------------------")
+
+	return resultat
 
 func construire_contenu(historique_joueur: Array, system_prompt: String) -> Array:
 	var contenu = [

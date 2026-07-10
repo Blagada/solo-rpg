@@ -1,0 +1,6 @@
+# Secrets
+secrets.cfg
+
+# Godot
+.godot/
+*.tmp
