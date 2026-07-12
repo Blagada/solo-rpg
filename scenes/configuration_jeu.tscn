@@ -24,104 +24,91 @@ grow_vertical = 2
 
 [node name="UITitle" type="Label" parent="VBoxContainer" unique_id=1407900789]
 layout_mode = 2
-text = "Configuration de la nouvelle partie"
+text = "Configuration d'aventure"
 
-[node name="Univers" type="HBoxContainer" parent="VBoxContainer" unique_id=1750016145]
+[node name="FormContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=2141327462]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer/FormContainer" unique_id=43035515]
 layout_mode = 2
 
-[node name="UniversLabel" type="Label" parent="VBoxContainer/Univers" unique_id=1782085781]
+[node name="Univers" type="HBoxContainer" parent="VBoxContainer/FormContainer" unique_id=1750016145]
+layout_mode = 2
+
+[node name="UniversLabel" type="Label" parent="VBoxContainer/FormContainer/Univers" unique_id=1782085781]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Univers"
 
-[node name="UniversOptions" type="OptionButton" parent="VBoxContainer/Univers" unique_id=1763180412]
+[node name="UniversOptions" type="OptionButton" parent="VBoxContainer/FormContainer/Univers" unique_id=1763180412]
 layout_mode = 2
-item_count = 5
-popup/item_0/text = "Post apocalyptique"
-popup/item_0/id = 0
-popup/item_1/text = "Cosy artisanale"
-popup/item_1/id = 1
-popup/item_2/text = "Médieval fantastique"
-popup/item_2/id = 2
-popup/item_3/text = "Science fiction"
-popup/item_3/id = 3
-popup/item_4/text = "Horreur psychologique"
-popup/item_4/id = 4
 
-[node name="Précisions" type="Label" parent="VBoxContainer" unique_id=978376736]
+[node name="Précisions" type="Label" parent="VBoxContainer/FormContainer" unique_id=978376736]
 layout_mode = 2
 text = "Précisions (optionel)"
 
-[node name="UniversPrecision" type="LineEdit" parent="VBoxContainer" unique_id=919295324]
+[node name="UniversPrecision" type="LineEdit" parent="VBoxContainer/FormContainer" unique_id=919295324]
 layout_mode = 2
 placeholder_text = "p. ex : Brumeux, sous la mer"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1931636718]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/FormContainer" unique_id=1931636718]
 layout_mode = 2
 
-[node name="Gender" type="HBoxContainer" parent="VBoxContainer" unique_id=889804634]
-layout_mode = 2
-
-[node name="SpecificiteLabel" type="Label" parent="VBoxContainer/Gender" unique_id=1344750117]
+[node name="SpecificiteLabel" type="Label" parent="VBoxContainer/FormContainer" unique_id=1344750117]
 layout_mode = 2
 text = "Spécificité de ton personnage"
 
-[node name="GenderOptions" type="OptionButton" parent="VBoxContainer/Gender" unique_id=1646137700]
+[node name="Gender" type="HBoxContainer" parent="VBoxContainer/FormContainer" unique_id=889804634]
+layout_mode = 2
+
+[node name="GenderLabel" type="Label" parent="VBoxContainer/FormContainer/Gender" unique_id=832535702]
+layout_mode = 2
+text = "Genre"
+
+[node name="GenderOptions" type="OptionButton" parent="VBoxContainer/FormContainer/Gender" unique_id=1646137700]
 layout_mode = 2
 size_flags_horizontal = 10
+selected = 0
 item_count = 4
-popup/item_0/text = "Genre"
-popup/item_0/id = 3
-popup/item_0/disabled = true
-popup/item_0/separator = true
+popup/item_0/text = "Aléatoire"
+popup/item_0/id = 0
 popup/item_1/text = "Féminin"
-popup/item_1/id = 0
+popup/item_1/id = 1
 popup/item_2/text = "Masculin"
-popup/item_2/id = 1
+popup/item_2/id = 2
 popup/item_3/text = "Autre"
-popup/item_3/id = 2
+popup/item_3/id = 3
 
-[node name="Age" type="HBoxContainer" parent="VBoxContainer" unique_id=1825334922]
+[node name="Age" type="HBoxContainer" parent="VBoxContainer/FormContainer" unique_id=1825334922]
 layout_mode = 2
 
-[node name="AgeLabel" type="Label" parent="VBoxContainer/Age" unique_id=651082631]
+[node name="AgeLabel" type="Label" parent="VBoxContainer/FormContainer/Age" unique_id=651082631]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Âge"
 
-[node name="AgeInput" type="SpinBox" parent="VBoxContainer/Age" unique_id=762137562]
+[node name="AgeRandomCheck" type="CheckButton" parent="VBoxContainer/FormContainer/Age" unique_id=1214448426]
+layout_mode = 2
+text = "Aléatoire"
+
+[node name="AgeInput" type="SpinBox" parent="VBoxContainer/FormContainer/Age" unique_id=762137562]
 layout_mode = 2
 size_flags_horizontal = 8
 min_value = 13.0
 max_value = 99.0
 value = 13.0
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer" unique_id=1490398387]
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/FormContainer" unique_id=1490398387]
 layout_mode = 2
 
-[node name="Tarot" type="HBoxContainer" parent="VBoxContainer" unique_id=1081514238]
-layout_mode = 2
-
-[node name="TarotLabel" type="Label" parent="VBoxContainer/Tarot" unique_id=1830759162]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Type de tarot"
-
-[node name="TarotOptions" type="OptionButton" parent="VBoxContainer/Tarot" unique_id=110897620]
-layout_mode = 2
-item_count = 2
-popup/item_0/text = "Tarot de Marceille"
-popup/item_0/id = 0
-popup/item_1/text = "Tarot Egyptien"
-popup/item_1/id = 1
-
-[node name="TarotCheck" type="CheckButton" parent="VBoxContainer" unique_id=1963708760]
+[node name="TarotCheck" type="CheckButton" parent="VBoxContainer/FormContainer" unique_id=1963708760]
 layout_mode = 2
 text = "Laisser le maître du jeu tirer les cartes"
 
-[node name="Start" type="Button" parent="VBoxContainer" unique_id=1568605110]
+[node name="Start" type="Button" parent="VBoxContainer/FormContainer" unique_id=1782304175]
 layout_mode = 2
-size_flags_horizontal = 0
-text = "Démarrer"
+text = "Lancer l'aventure"
 
-[connection signal="pressed" from="VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/FormContainer/Start" to="." method="_on_start_pressed"]

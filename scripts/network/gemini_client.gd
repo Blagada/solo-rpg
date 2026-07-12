@@ -11,8 +11,10 @@ const SECRETS_PATH = "res://secrets.cfg"
 
 var api_key: String = ""
 
+
 func _ready() -> void:
 	api_key = _charger_cle_api()
+
 
 func _charger_cle_api() -> String:
 	# 1. Priorité à la variable d'environnement (pratique en dev, et seule option viable
@@ -30,9 +32,8 @@ func _charger_cle_api() -> String:
 	push_error("Clé API introuvable. Copie secrets.cfg.example vers secrets.cfg et remplis ta clé, ou définis la variable d'environnement GEMINI_API_KEY.")
 	return ""
 
-# Remplace toute la fonction envoyer_requete par celle-ci
 
-func envoyer_requete(historique: Array, system_prompt: String) -> void:
+func envoyer_requete(historique: Array, system_prompt: String, type_tarot: String = "") -> void:
 	if api_key == "":
 		erreur_recue.emit(-1)
 		return
@@ -47,6 +48,7 @@ func envoyer_requete(historique: Array, system_prompt: String) -> void:
 	if resultat_envoi != OK:
 		printerr("--- ÉCHEC DE L'ENVOI DE LA REQUÊTE (Gemini) ---")
 		printerr("Code d'erreur Godot : ", resultat_envoi)
+
 
 func _traduire_vers_gemini(historique: Array, system_prompt: String) -> Array:
 	# Gemini n'a pas de champ système dédié : on le glisse dans le tout
@@ -89,6 +91,7 @@ func _on_api_request_request_completed(_result: int, response_code: int, _header
 		# AFFICHE CE QUE LE SERVEUR TE DIT
 		print("Réponse serveur : ", body.get_string_from_utf8())
 		erreur_recue.emit(response_code)
+
 
 func _extraire_json(texte: String) -> String:
 	# Sécurité : le modèle entoure parfois le JSON de ```json ... ``` malgré

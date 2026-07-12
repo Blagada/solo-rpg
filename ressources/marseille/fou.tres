@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="TarotCards" format=3 uid="uid://qbvcp8o63sul"]
+
+[ext_resource type="Script" uid="uid://dhuntvh65sunn" path="res://ressources/tarot_cards.gd" id="1_ps37j"]
+
+[resource]
+script = ExtResource("1_ps37j")
+nom = "Le fou"
+metadata/_custom_type_script = "uid://dhuntvh65sunn"

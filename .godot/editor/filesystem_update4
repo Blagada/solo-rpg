@@ -1,6 +1,10 @@
 res://scenes/configuration_jeu.tscn
 res://scripts/core/game_data.gd
-res://scripts/core/prompt_manager.gd
-res://scripts/network/gemini_client.gd
+res://scripts/core/save_manager.gd
+res://scenes/solo_rpg.tscn
 res://scripts/core/game_manager.gd
-res://scripts/network/claude_client.gd
+res://scripts/ui/main_menu.gd
+res://scenes/main_menu.tscn
+res://scripts/core/save_history_manager.gd
+res://scripts/ui/ui_controller.gd
+res://scripts/core/prompt_manager.gd

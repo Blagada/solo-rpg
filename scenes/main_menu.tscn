@@ -27,27 +27,24 @@ layout_mode = 2
 text = "Solo RPG"
 horizontal_alignment = 1
 
-[node name="Continue" type="Button" parent="VBoxContainer" unique_id=1323868778]
+[node name="ContinueButton" type="Button" parent="VBoxContainer" unique_id=1323868778]
 layout_mode = 2
 disabled = true
-text = "Continuer"
+text = "Continuer votre aventure"
 
-[node name="New" type="Button" parent="VBoxContainer" unique_id=1177984222]
+[node name="NewButton" type="Button" parent="VBoxContainer" unique_id=1177984222]
 layout_mode = 2
-text = "Nouvelle partie"
+text = "Nouvelle aventure"
 
-[node name="NewRandom" type="Button" parent="VBoxContainer" unique_id=1206021045]
-layout_mode = 2
-text = "Nouvelle partie aléatoire"
-
-[node name="Load" type="Button" parent="VBoxContainer" unique_id=113602868]
+[node name="LoadButton" type="Button" parent="VBoxContainer" unique_id=113602868]
+visible = false
 layout_mode = 2
 text = "Charger"
 
-[node name="Exit" type="Button" parent="VBoxContainer" unique_id=1970429709]
+[node name="ExitButton" type="Button" parent="VBoxContainer" unique_id=1970429709]
 layout_mode = 2
 text = "Quitter"
 
-[connection signal="pressed" from="VBoxContainer/New" to="." method="_on_new_pressed"]
-[connection signal="pressed" from="VBoxContainer/NewRandom" to="." method="_on_new_random_pressed"]
-[connection signal="pressed" from="VBoxContainer/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="VBoxContainer/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="VBoxContainer/NewButton" to="." method="_on_new_pressed"]
+[connection signal="pressed" from="VBoxContainer/ExitButton" to="." method="_on_exit_pressed"]

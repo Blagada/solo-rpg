@@ -23,6 +23,7 @@ const DIRECTIVES_NARRATIVES = """Directives narratives strictes :
 - Si le joueur te pose une question, réponds-y pour faire avancer l'histoire.
 - À la fin de ta réponse, le joueur doit avoir des options d'actions disponibles.
 - L'histoire doit pouvoir se terminer en maximum 4 réponses.
+- Reste concis : maximum 100-120 mots par réponse narrative, jamais plus.
 """
 
 const DIRECTIVES_TAROT = """Mécanique du Tarot :
@@ -41,14 +42,22 @@ Règles pour le champ "etat" :
 - Reprends et fais évoluer l'état précédent fourni ci-dessous ; n'oublie jamais un fait de jeu déjà établi, ajoute les nouveaux, retire ceux devenus obsolètes.
 - Reste concis : 2-4 phrases maximum, uniquement les faits utiles à la cohérence future, pas de prose."""
 
+const INSTRUCTIONS_TOOL_USE = """Réponds à chaque tour UNIQUEMENT via l'outil repondre_joueur — jamais de texte libre en dehors de cet outil."""
+
+const DIRECTIVES_FORMATAGE = """Formatage à utiliser dans ta narration :
+- **Gras** pour les noms propres importants (personnages, lieux clés) à leur première mention marquante.
+- *Italique* pour les objets de quête ou éléments que le joueur devrait remarquer/retenir."""
+
 # --- FONCTIONS ---
 
-func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur: int, tarot: String, tirage_auto: bool, etat_partie: String) -> String:
+func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur: int, tarot: String, tirage_auto: bool, etat_partie: String, utiliser_tools: bool = false) -> String:
 	var mode_tirage = "L'IA tire les cartes automatiquement." if tirage_auto else "Le joueur tire ses propres cartes et te les communique."
+	var univers_affiche = univers if univers != "" else "à inventer librement, cohérent avec le reste"
+	var genre_affiche = genre if genre != "" else "un genre de ton choix"
 	var etat_affiche = etat_partie if etat_partie != "" else "Aucun événement encore. L'aventure commence."
+	var bloc_format = INSTRUCTIONS_TOOL_USE if utiliser_tools else FORMAT_REPONSE
 
-	# Assemblage du prompt via les constantes
-	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + (DIRECTIVES_TAROT % mode_tirage) + "\n\n" + FORMAT_REPONSE + """
+	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + (DIRECTIVES_TAROT % mode_tirage) + "\n\n" + bloc_format + "\n\n" + DIRECTIVES_FORMATAGE + """
 	
 	Paramètres de la partie :
 	- Personnage : %d ans, %s.
@@ -60,7 +69,7 @@ func generer_system_prompt(univers: String, precision: String, genre: String, ag
 	État actuel de la partie (à faire évoluer, ne jamais ignorer) :
 	%s
 	"""
-	var resultat = template % [age_joueur, genre, genre, tarot, mode_tirage, univers, precision, etat_affiche]
+	var resultat = template % [age_joueur, genre_affiche, genre_affiche, tarot, mode_tirage, univers_affiche, precision, etat_affiche]
 
 	print("--- ÉTAT INJECTÉ DANS LE PROMPT ---")
 	print(etat_affiche)

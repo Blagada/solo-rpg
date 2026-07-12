@@ -1,7 +1,7 @@
 extends Node
 class_name ClaudeClient
 
-signal reponse_recue(texte_ia, nouvel_etat)
+signal reponse_recue(texte_ia, nouvel_etat, tools_declenches: Dictionary)
 signal erreur_recue(code)
 
 @onready var http_request: HTTPRequest = $APIRequest
@@ -12,10 +12,47 @@ const ANTHROPIC_VERSION = "2023-06-01"
 const SECRETS_PATH = "res://secrets.cfg"
 const MAX_TOKENS = 1024
 
+const TOOL_ETAT = {
+	"name": "mettre_a_jour_etat",
+	"description": "Met à jour le résumé persistant de l'état de la partie (lieu, objets, PNJ, objectif, événements marquants). À appeler à chaque tour.",
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"etat": {
+				"type": "string",
+				"description": "Résumé condensé et autonome de la situation actuelle, 2-4 phrases maximum."
+			}
+		},
+		"required": ["etat"]
+	}
+}
+
+const TOOL_REPONSE = {
+	"name": "repondre_joueur",
+	"description": "Utilise CET outil pour structurer CHAQUE réponse au joueur, sans exception.",
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"narration": {"type": "string", "description": "Le texte narratif complet à afficher au joueur."},
+			"etat": {"type": "string", "description": "Résumé condensé de la situation, incluant TOUT fait pertinent déjà établi — y compris ce que le personnage sait ou a compris (pas seulement les objets et lieux physiques)."},
+			"carte_tiree": {
+				"type": "object",
+				"description": "Uniquement si un tirage a lieu ce tour (moments charnières). Omets sinon.",
+				"properties": {
+					"nom_carte": {"type": "string"},
+					"consequence_narrative": {"type": "string"}
+				}
+			}
+		},
+		"required": ["narration", "etat"]
+	}
+}
+
 var api_key: String = ""
 
 func _ready() -> void:
 	api_key = _charger_cle_api()
+
 
 func _charger_cle_api() -> String:
 	var env_key = OS.get_environment("CLAUDE_API_KEY")
@@ -30,9 +67,8 @@ func _charger_cle_api() -> String:
 	push_error("Clé API Claude introuvable. Ajoute 'claude_key' dans secrets.cfg, ou définis CLAUDE_API_KEY.")
 	return ""
 
-# Remplace toute la fonction envoyer_requete par celle-ci
 
-func envoyer_requete(historique: Array, system_prompt: String) -> void:
+func envoyer_requete(historique: Array, system_prompt: String, type_tarot: String) -> void:
 	if api_key == "":
 		erreur_recue.emit(-1)
 		return
@@ -41,7 +77,9 @@ func envoyer_requete(historique: Array, system_prompt: String) -> void:
 		"model": MODEL_NAME,
 		"max_tokens": MAX_TOKENS,
 		"system": system_prompt,
-		"messages": _traduire_vers_claude(historique)
+		"messages": _traduire_vers_claude(historique),
+		"tools": _construire_tools(type_tarot),
+		"tool_choice": {"type": "tool", "name": "repondre_joueur"}
 	}
 	var json_body = JSON.stringify(body)
 	var headers = [
@@ -55,36 +93,85 @@ func envoyer_requete(historique: Array, system_prompt: String) -> void:
 		printerr("--- ÉCHEC DE L'ENVOI DE LA REQUÊTE (Claude) ---")
 		printerr("Code d'erreur Godot : ", resultat_envoi)
 
+
 func _traduire_vers_claude(historique: Array) -> Array:
 	var contenu = []
 	for message in historique:
 		contenu.append({"role": message["role"], "content": message["text"]})
 	return contenu
 
+
+func _construire_tools(type_tarot: String) -> Array:
+	var noms_cartes = _charger_noms_cartes(type_tarot)
+
+	return [{
+		"name": "repondre_joueur",
+		"description": "Utilise CET outil pour structurer CHAQUE réponse au joueur, sans exception.",
+		"input_schema": {
+			"type": "object",
+			"properties": {
+				"narration": {
+					"type": "string",
+					"description": "Le texte narratif complet à afficher au joueur."
+				},
+				"etat": {
+					"type": "string",
+					"description": "Résumé condensé de la situation, incluant TOUT fait pertinent déjà établi — y compris ce que le personnage sait ou a compris (pas seulement les objets et lieux physiques)."
+				},
+				"carte_tiree": {
+					"type": "object",
+					"description": "Uniquement si un tirage a lieu ce tour (moments charnières). Omets ce champ sinon.",
+					"properties": {
+						"nom_carte": {"type": "string", "enum": noms_cartes},
+						"consequence_narrative": {"type": "string"}
+					}
+				}
+			},
+			"required": ["narration", "etat"]
+		}
+	}]
+
+
+func _charger_noms_cartes(type_tarot: String) -> Array:
+	var noms = []
+	var chemin = "res://ressources/" + type_tarot + "/"
+	var dir = DirAccess.open(chemin)
+
+	if dir == null:
+		push_error("Dossier de cartes introuvable : " + chemin)
+		return noms
+
+	dir.list_dir_begin()
+	var fichier = dir.get_next()
+	while fichier != "":
+		if fichier.ends_with(".tres"):
+			var carte = load(chemin + fichier) as TarotCards
+			if carte:
+				noms.append(carte.nom)
+		fichier = dir.get_next()
+
+	return noms
+
+
 func _on_api_request_request_completed(_result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if response_code == 200:
 		var json = JSON.parse_string(body.get_string_from_utf8())
-		var texte_brut = json["content"][0]["text"]
+		var blocs = json["content"]
 
-		print("--- TEXTE BRUT REÇU DE CLAUDE ---")
-		print(texte_brut)
-		print("----------------------------------")
+		var narration = ""
+		var nouvel_etat = ""
+		var tools_declenches = {}
 
-		var contenu_parse = JSON.parse_string(_extraire_json(texte_brut))
-		if contenu_parse != null and typeof(contenu_parse) == TYPE_DICTIONARY and contenu_parse.has("narration"):
-			print("--- NOUVEL ÉTAT EXTRAIT (Claude) ---")
-			print(contenu_parse.get("etat", "(aucun champ etat reçu)"))
-			print("--------------------------------------")
-			reponse_recue.emit(contenu_parse["narration"], contenu_parse.get("etat", ""))
-		else:
-			push_warning("Réponse Claude non conforme au format JSON attendu, repli en texte brut.")
-			reponse_recue.emit(texte_brut, "")
+		for bloc in blocs:
+			if bloc["type"] == "tool_use" and bloc["name"] == "repondre_joueur":
+				narration = bloc["input"]["narration"]
+				nouvel_etat = bloc["input"]["etat"]
+				if bloc["input"].has("carte_tiree"):
+					tools_declenches["tarot"] = bloc["input"]["carte_tiree"]
+					print("--- CARTE TIRÉE ---")
+					print(bloc["input"]["carte_tiree"]["nom_carte"])
+
+		reponse_recue.emit(narration, nouvel_etat, tools_declenches)
 	else:
 		print("Réponse serveur (Claude) : ", body.get_string_from_utf8())
 		erreur_recue.emit(response_code)
-
-func _extraire_json(texte: String) -> String:
-	var nettoye = texte.strip_edges()
-	if nettoye.begins_with("```"):
-		nettoye = nettoye.trim_prefix("```json").trim_prefix("```").trim_suffix("```").strip_edges()
-	return nettoye

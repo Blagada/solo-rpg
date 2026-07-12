@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dmkr1owohtgi0" path="res://scripts/core/game_manager.gd" id="1_4i3hq"]
 [ext_resource type="Script" uid="uid://dwhif1yiplivo" path="res://scripts/ui/ui_controller.gd" id="2_5hdv6"]
 [ext_resource type="PackedScene" uid="uid://cmt024d4nejhd" path="res://scenes/Components/gemini_client.tscn" id="2_amrf6"]
+[ext_resource type="PackedScene" uid="uid://mnnr5rm6avxh" path="res://scenes/Components/claude_client.tscn" id="4_dov0g"]
 [ext_resource type="Script" uid="uid://b3y37htt7mhq" path="res://scripts/core/prompt_manager.gd" id="4_i1xcm"]
 
 [node name="SOLO_RPG" type="Control" unique_id=677726178]
@@ -15,6 +16,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_4i3hq")
+utiliser_claude = true
 
 [node name="MainLayout" type="VBoxContainer" parent="." unique_id=168924610]
 layout_mode = 1
@@ -62,6 +64,8 @@ layout_mode = 2
 text = "Envoyer"
 
 [node name="GeminiClient" parent="." unique_id=499475038 instance=ExtResource("2_amrf6")]
+
+[node name="ClaudeClient" parent="." unique_id=1722497521 instance=ExtResource("4_dov0g")]
 
 [node name="PromptManager" type="Node2D" parent="." unique_id=1291331343]
 script = ExtResource("4_i1xcm")

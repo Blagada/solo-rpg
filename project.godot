@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameData="*uid://rfq6n6yld5pa"
+SaveManager="*uid://cocyn0sayf0xq"
 
 [display]
 
@@ -27,6 +28,7 @@ window/stretch/aspect="expand"
 [file_customization]
 
 folder_colors={
+"res://ressources/": "green",
 "res://scenes/": "yellow",
 "res://scripts/": "orange",
 "res://scripts/core/": "red",

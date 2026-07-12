@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://mnnr5rm6avxh"]
+
+[ext_resource type="Script" uid="uid://djjhc7md5m1tj" path="res://scripts/network/claude_client.gd" id="1_ag521"]
+
+[node name="ClaudeClient" type="Node2D" unique_id=1722497521]
+script = ExtResource("1_ag521")
+
+[node name="APIRequest" type="HTTPRequest" parent="." unique_id=900228316]
+
+[connection signal="request_completed" from="APIRequest" to="." method="_on_api_request_request_completed"]

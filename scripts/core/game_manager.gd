@@ -1,31 +1,44 @@
 extends Control
 class_name GameManager
+@export var utiliser_claude: bool = false
 
+# --- UI ---
 @onready var ui: UIController = $MainLayout
-@onready var gemini_client: GeminiClient = $GeminiClient
 @onready var input_text: LineEdit = $MainLayout/InputLayout/InputText
-@onready var prompt_manager: PromptManager = $PromptManager
 
-var historique_partie = []
+# --- script ---
+@onready var prompt_manager: PromptManager = $PromptManager
+# --- API ---
+@onready var gemini_client: GeminiClient = $GeminiClient
+@onready var claude_client: ClaudeClient = $ClaudeClient
+@onready var client: Node = claude_client if utiliser_claude else gemini_client
+
+
+
 var system_prompt: String = ""
 
 func _ready():
 	# 1. On connecte le signal
-	gemini_client.reponse_recue.connect(_on_reponse_ia)
-	gemini_client.erreur_recue.connect(_on_erreur_ia)
-	remplir_donnees_par_defaut()
+	client.reponse_recue.connect(_on_reponse_ia)
+	client.erreur_recue.connect(_on_erreur_ia)
+	print("--- CLIENT API ACTIF : ", "Claude" if utiliser_claude else "Gemini", " ---")
+
 	# 2. On génère le prompt système au début
 	_regenerer_system_prompt()
 
-	# 3. On prépare le contenu initial (historique vide au départ)
-	var messages = prompt_manager.construire_contenu([])
+	# 3. On prépare le contenu initial
+	if GameData.historique_partie.is_empty():
+		# Nouvelle aventure : on lance le premier tour
+		ui.afficher_message("Système ", "La partie peut commencer.")
+		var messages = prompt_manager.construire_contenu([])
+		client.envoyer_requete(messages, system_prompt, GameData.type_tarot)
+	else:
+		# Aventure chargée : on réaffiche l'historique, aucun appel API
+		ui.afficher_message("Système ", "Aventure reprise.")
+		for message in GameData.historique_partie:
+			var auteur = "Vous" if message["role"] == "user" else "DM"
+			ui.afficher_message(auteur, message["text"])
 
-	# 4. On envoie la requête initiale pour lancer l'aventure
-	ui.afficher_message("Système ", "La partie peu commencer.")
-	# Dans _ready(), la ligne d'envoi initial change :
-	gemini_client.envoyer_requete(messages, system_prompt)
-
-# Nouvelle fonction à ajouter dans game_manager.gd
 
 func _regenerer_system_prompt() -> void:
 	system_prompt = prompt_manager.generer_system_prompt(
@@ -35,25 +48,22 @@ func _regenerer_system_prompt() -> void:
 		GameData.age_joueur,
 		GameData.type_tarot,
 		GameData.tirage_auto,
-		GameData.etat_partie
+		GameData.etat_partie,
+		utiliser_claude
 	)
 
-# Dans _on_reponse_ia(), juste après avoir affiché le message à l'écran
 
-func _on_reponse_ia(texte_ia: String, nouvel_etat: String):
+func _on_reponse_ia(texte_ia: String, nouvel_etat: String, tools_declenches: Dictionary):
 	ui.basculer_indicateur_pense(false)
 	ui.afficher_message("DM", texte_ia)
-
-	# On ajoute aussi la réponse du MJ à l'historique — sinon le modèle
-	# ne revoit jamais ses propres réponses précédentes.
-	historique_partie.append({"role": "assistant", "text": texte_ia})
+	GameData.historique_partie.append({"role": "assistant", "text": texte_ia})
 
 	if nouvel_etat != "":
 		GameData.etat_partie = nouvel_etat
-		print("--- ÉTAT SAUVEGARDÉ DANS GAMEDATA ---")
-		print(GameData.etat_partie)
-		print("---------------------------------------")
+		# Envoi la réponse dans de l'IA dans la conversation
 		_regenerer_system_prompt()
+		# Sauvegarde automatiquement la partie après la réponse de l'IA
+		SaveManager.sauvegarder_partie()
 
 
 func _on_send_button_pressed():
@@ -63,18 +73,6 @@ func _on_send_button_pressed():
 func _on_input_text_text_submitted(_text: String):
 	_gerer_envoi()
 
-func remplir_donnees_par_defaut():
-	if GameData.age_joueur <= 0:
-		GameData.age_joueur = randi_range(13, 99) # Âge aléatoire entre 13 et 99
-		
-	if GameData.genre_joueur == "":
-		var genres = ["masculin", "féminin", "autre"]
-		GameData.genre_joueur = genres.pick_random()
-		
-	if GameData.univers_choisi == "":
-		GameData.univers_choisi = "médiéval fantastique"
-
-# Dans _gerer_envoi(), remplace le bloc complet par celui-ci
 
 func _gerer_envoi():
 	var texte_joueur = ui.input_text.text
@@ -84,17 +82,16 @@ func _gerer_envoi():
 		ui.basculer_indicateur_pense(true)
 
 		# 1. On stocke le message du joueur (format neutre)
-		historique_partie.append({"role": "user", "text": texte_joueur})
+		GameData.historique_partie.append({"role": "user", "text": texte_joueur})
 
-		# 2. On construit le contenu avec le PromptManager (ne gère plus le system_prompt)
-		var contenu_final = prompt_manager.construire_contenu(historique_partie)
+		var contenu_final = prompt_manager.construire_contenu(GameData.historique_partie)
 
-		# 3. On envoie, system_prompt passé séparément
-		gemini_client.envoyer_requete(contenu_final, system_prompt)
+		client.envoyer_requete(contenu_final, system_prompt, GameData.type_tarot)
 
 		get_viewport().gui_release_focus()
 		await get_tree().process_frame
 		input_text.grab_focus()
+
 
 func _on_erreur_ia(code):
 	# C'est ici que tu vas enfin voir les erreurs en rouge
