@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://do1y1ihpsywiu"]
 
+[ext_resource type="Theme" uid="uid://2sn65p5a048g" path="res://ressources/themes/theme_principal.tres" id="1_cgvny"]
 [ext_resource type="Script" uid="uid://dmkr1owohtgi0" path="res://scripts/core/game_manager.gd" id="1_tsvl1"]
 [ext_resource type="Script" uid="uid://dwhif1yiplivo" path="res://scripts/ui/ui_controller.gd" id="2_tfith"]
 [ext_resource type="PackedScene" uid="uid://cmt024d4nejhd" path="res://scenes/Clients/gemini_client.tscn" id="3_fm2uc"]
@@ -17,6 +18,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("1_cgvny")
 script = ExtResource("1_tsvl1")
 utiliser_claude = true
 

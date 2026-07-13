@@ -7,12 +7,14 @@ func sauvegarder_partie() -> void:
 	var data = {
 		"univers_choisi": GameData.univers_choisi,
 		"precisions": GameData.precisions,
-		"genre_joueur": GameData.genre_joueur,
-		"age_joueur": GameData.age_joueur,
+		"genre_perso": GameData.genre_perso,
+		"age_perso": GameData.age_perso,
 		"type_tarot": GameData.type_tarot,
 		"tirage_auto": GameData.tirage_auto,
 		"etat_partie": GameData.etat_partie,
-		"historique_partie": GameData.historique_partie
+		"historique_partie": GameData.historique_partie,
+		"nom_perso": GameData.nom_perso,
+		"profession_perso": GameData.profession_perso
 	}
 	# Sauvegarde des donné (data) dans un JSON
 	var fichier = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -45,11 +47,12 @@ func charger_partie() -> bool:
 
 	GameData.univers_choisi = data.get("univers_choisi", "")
 	GameData.precisions = data.get("precisions", "")
-	GameData.genre_joueur = data.get("genre_joueur", "")
-	GameData.age_joueur = data.get("age_joueur", 25)
+	GameData.genre_perso = data.get("genre_perso", "")
+	GameData.age_perso = data.get("age_perso", 25)
 	GameData.type_tarot = data.get("type_tarot", "marseille")
 	GameData.tirage_auto = data.get("tirage_auto", true)
 	GameData.etat_partie = data.get("etat_partie", "")
 	GameData.historique_partie = data.get("historique_partie", [])
-	print("--- CHARGEMENT : historique contient ", GameData.historique_partie.size(), " messages ---")
+	GameData.nom_perso = data.get("nom_perso", "")
+	GameData.profession_perso = data.get("profession_perso", "")
 	return true

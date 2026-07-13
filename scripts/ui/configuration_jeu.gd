@@ -31,12 +31,13 @@ func _on_start_pressed() -> void:
 	var genres_possibles = ["masculin", "féminin", "neutre"]
 
 	var univers = univers_options.get_item_text(univers_options.selected)
-	GameData.univers_choisi = "" if univers == "Aléatoire" else univers
+	GameData.univers_choisi = GameData.UNIVERS_PAR_DEFAUT.pick_random() if univers == "Aléatoire" else univers
 
 	var genre = gender_options.get_item_text(gender_options.selected)
-	GameData.genre_joueur = genres_possibles[randi() % genres_possibles.size()] if genre == "Aléatoire" else genre
+	GameData.genre_perso = genres_possibles[randi() % genres_possibles.size()] if genre == "Aléatoire" else genre
 
-	GameData.age_joueur = randi_range(13, 99) if age_random_check.button_pressed else int(age_input.value)
+	var age = clamp(round(randfn(32.5, 12.5)), 13, 99)
+	GameData.age_perso = int(age)
 	GameData.precisions = univers_precision.text
 	GameData.type_tarot = TAROT_PAR_DEFAUT
 	GameData.tirage_auto = tarot_check.button_pressed

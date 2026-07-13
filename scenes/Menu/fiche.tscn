@@ -54,14 +54,14 @@ text = "Âge : "
 [node name="ValeurAge" type="Label" parent="VBoxContainer/Age" unique_id=967250020]
 layout_mode = 2
 
-[node name="Gnre" type="HBoxContainer" parent="VBoxContainer" unique_id=287413828]
+[node name="Genre" type="HBoxContainer" parent="VBoxContainer" unique_id=287413828]
 layout_mode = 2
 
-[node name="TitreGenre" type="Label" parent="VBoxContainer/Gnre" unique_id=1275541978]
+[node name="TitreGenre" type="Label" parent="VBoxContainer/Genre" unique_id=1275541978]
 layout_mode = 2
 text = "Genre : "
 
-[node name="ValeurGenre" type="Label" parent="VBoxContainer/Gnre" unique_id=385982201]
+[node name="ValeurGenre" type="Label" parent="VBoxContainer/Genre" unique_id=385982201]
 layout_mode = 2
 
 [node name="Profession" type="HBoxContainer" parent="VBoxContainer" unique_id=558467530]

@@ -42,7 +42,7 @@ const TOOL_REPONSE = {
 					"nom_carte": {"type": "string"},
 					"consequence_narrative": {"type": "string"}
 				}
-			}
+			},
 		},
 		"required": ["narration", "etat"]
 	}
@@ -125,7 +125,13 @@ func _construire_tools(type_tarot: String) -> Array:
 						"nom_carte": {"type": "string", "enum": noms_cartes},
 						"consequence_narrative": {"type": "string"}
 					}
-				}
+				},
+				"univers_invente": {
+					"type": "string",
+					"description": "Uniquement si l'univers n'était pas déjà précisé par le joueur : indique en quelques mots l'univers que tu viens d'inventer pour cette partie."
+				},
+				"nom_personnage": {"type": "string", "description": "Le nom du personnage joueur, dès qu'il est établi ou confirmé dans la narration."},
+				"profession": {"type": "string", "description": "La profession/le métier du personnage, dès qu'il est établi ou confirmé dans la narration."}
 			},
 			"required": ["narration", "etat"]
 		}
@@ -170,6 +176,13 @@ func _on_api_request_request_completed(_result: int, response_code: int, _header
 					tools_declenches["tarot"] = bloc["input"]["carte_tiree"]
 					print("--- CARTE TIRÉE ---")
 					print(bloc["input"]["carte_tiree"]["nom_carte"])
+				if bloc["input"].has("univers_invente"):
+					tools_declenches["univers_invente"] = bloc["input"]["univers_invente"]
+					print("--- Univers inventé ---" + bloc["input"]["univers_invente"])
+				if bloc["input"].has("nom_personnage"):
+					tools_declenches["nom_personnage"] = bloc["input"]["nom_personnage"]
+				if bloc["input"].has("profession"):
+					tools_declenches["profession"] = bloc["input"]["profession"]
 
 		reponse_recue.emit(narration, nouvel_etat, tools_declenches)
 	else:

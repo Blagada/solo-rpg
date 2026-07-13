@@ -1,8 +1,7 @@
 [gd_scene format=3 uid="uid://dnq8eotj1vb45"]
 
 [ext_resource type="Theme" uid="uid://2sn65p5a048g" path="res://ressources/themes/theme_principal.tres" id="1_bgoos"]
-[ext_resource type="Script" uid="uid://b7skt618b0382" path="res://scripts/ui/options_taille.gd" id="2_am7jt"]
-[ext_resource type="Script" uid="uid://hya7bw80oner" path="res://scripts/ui/options_police_caractere.gd" id="3_4if5q"]
+[ext_resource type="Script" uid="uid://dkh6pp847rkyp" path="res://scripts/ui/parametres.gd" id="2_pkwl1"]
 
 [node name="Paramètres" type="PanelContainer" unique_id=1299370874]
 anchors_preset = 15
@@ -11,6 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_bgoos")
+script = ExtResource("2_pkwl1")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=436110803]
 layout_mode = 2
@@ -39,7 +39,6 @@ size_flags_horizontal = 3
 min_value = 14.0
 max_value = 45.0
 value = 16.0
-script = ExtResource("2_am7jt")
 
 [node name="PoliceCaractereTexte" type="HBoxContainer" parent="ScrollContainer/ParametresContainer" unique_id=383530859]
 layout_mode = 2
@@ -50,7 +49,6 @@ text = "Police de caractère : "
 
 [node name="OptionsPoliceCaractere" type="OptionButton" parent="ScrollContainer/ParametresContainer/PoliceCaractereTexte" unique_id=819827542]
 layout_mode = 2
-script = ExtResource("3_4if5q")
 
 [node name="ExplicationUnivers" type="Label" parent="ScrollContainer/ParametresContainer" unique_id=765346417]
 layout_mode = 2
@@ -62,5 +60,5 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Sauvegarder l'univers"
 
-[connection signal="value_changed" from="ScrollContainer/ParametresContainer/TailleTexte/SliderTaille" to="ScrollContainer/ParametresContainer/TailleTexte/SliderTaille" method="_on_taille_slider_value_changed"]
-[connection signal="item_selected" from="ScrollContainer/ParametresContainer/PoliceCaractereTexte/OptionsPoliceCaractere" to="ScrollContainer/ParametresContainer/PoliceCaractereTexte/OptionsPoliceCaractere" method="_on_police_options_item_selected"]
+[connection signal="value_changed" from="ScrollContainer/ParametresContainer/TailleTexte/SliderTaille" to="." method="_on_taille_slider_value_changed"]
+[connection signal="item_selected" from="ScrollContainer/ParametresContainer/PoliceCaractereTexte/OptionsPoliceCaractere" to="." method="_on_police_options_item_selected"]

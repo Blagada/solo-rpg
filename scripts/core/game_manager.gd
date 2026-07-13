@@ -44,8 +44,8 @@ func _regenerer_system_prompt() -> void:
 	system_prompt = prompt_manager.generer_system_prompt(
 		GameData.univers_choisi,
 		GameData.precisions,
-		GameData.genre_joueur,
-		GameData.age_joueur,
+		GameData.genre_perso,
+		GameData.age_perso,
 		GameData.type_tarot,
 		GameData.tirage_auto,
 		GameData.etat_partie,
@@ -62,9 +62,16 @@ func _on_reponse_ia(texte_ia: String, nouvel_etat: String, tools_declenches: Dic
 		GameData.etat_partie = nouvel_etat
 		# Envoi la réponse dans de l'IA dans la conversation
 		_regenerer_system_prompt()
-		# Sauvegarde automatiquement la partie après la réponse de l'IA
-		SaveManager.sauvegarder_partie()
 
+	if GameData.univers_choisi == "" and tools_declenches.has("univers_invente"):
+		GameData.univers_choisi = tools_declenches["univers_invente"]
+	if tools_declenches.has("nom_personnage"):
+		GameData.nom_perso = tools_declenches["nom_personnage"]
+	if tools_declenches.has("profession"):
+		GameData.profession_perso = tools_declenches["profession"]
+
+	# Sauvegarde automatiquement la partie après la réponse de l'IA
+	SaveManager.sauvegarder_partie()
 
 func _on_send_button_pressed():
 	_gerer_envoi()

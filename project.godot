@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameData="*uid://rfq6n6yld5pa"
 SaveManager="*uid://cocyn0sayf0xq"
+Preferences="*uid://clj4mt7nxt0q1"
 
 [display]
 
