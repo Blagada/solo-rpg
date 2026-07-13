@@ -36,6 +36,10 @@ folder_colors={
 "res://scripts/ui/": "purple"
 }
 
+[gui]
+
+theme/custom="uid://2sn65p5a048g"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

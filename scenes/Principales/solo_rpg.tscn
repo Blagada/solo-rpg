@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://do1y1ihpsywiu"]
 
-[ext_resource type="Script" uid="uid://dmkr1owohtgi0" path="res://scripts/core/game_manager.gd" id="1_4i3hq"]
-[ext_resource type="Script" uid="uid://dwhif1yiplivo" path="res://scripts/ui/ui_controller.gd" id="2_5hdv6"]
-[ext_resource type="PackedScene" uid="uid://cmt024d4nejhd" path="res://scenes/Components/gemini_client.tscn" id="2_amrf6"]
-[ext_resource type="PackedScene" uid="uid://mnnr5rm6avxh" path="res://scenes/Components/claude_client.tscn" id="4_dov0g"]
-[ext_resource type="Script" uid="uid://b3y37htt7mhq" path="res://scripts/core/prompt_manager.gd" id="4_i1xcm"]
+[ext_resource type="Script" uid="uid://dmkr1owohtgi0" path="res://scripts/core/game_manager.gd" id="1_tsvl1"]
+[ext_resource type="Script" uid="uid://dwhif1yiplivo" path="res://scripts/ui/ui_controller.gd" id="2_tfith"]
+[ext_resource type="PackedScene" uid="uid://cmt024d4nejhd" path="res://scenes/Clients/gemini_client.tscn" id="3_fm2uc"]
+[ext_resource type="Script" uid="uid://cf7smqmlykseq" path="res://scripts/ui/menu_panel_button.gd" id="3_tfith"]
+[ext_resource type="PackedScene" uid="uid://mnnr5rm6avxh" path="res://scenes/Clients/claude_client.tscn" id="4_cgvny"]
+[ext_resource type="Script" uid="uid://b3y37htt7mhq" path="res://scripts/core/prompt_manager.gd" id="5_cx4fd"]
+[ext_resource type="PackedScene" uid="uid://t1dusr0vbo0u" path="res://scenes/Menu/menu_panel.tscn" id="7_fm2uc"]
 
 [node name="SOLO_RPG" type="Control" unique_id=677726178]
 layout_mode = 3
@@ -15,7 +17,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_4i3hq")
+script = ExtResource("1_tsvl1")
 utiliser_claude = true
 
 [node name="MainLayout" type="VBoxContainer" parent="." unique_id=168924610]
@@ -30,8 +32,14 @@ offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("2_5hdv6")
+script = ExtResource("2_tfith")
 metadata/_edit_use_anchors_ = true
+
+[node name="MenuPanelButton" type="Button" parent="MainLayout" unique_id=799350601]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Menu"
+script = ExtResource("3_tfith")
 
 [node name="HistoryScroll" type="ScrollContainer" parent="MainLayout" unique_id=1159377877]
 layout_mode = 2
@@ -63,12 +71,17 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Envoyer"
 
-[node name="GeminiClient" parent="." unique_id=499475038 instance=ExtResource("2_amrf6")]
+[node name="GeminiClient" parent="." unique_id=499475038 instance=ExtResource("3_fm2uc")]
 
-[node name="ClaudeClient" parent="." unique_id=1722497521 instance=ExtResource("4_dov0g")]
+[node name="ClaudeClient" parent="." unique_id=1722497521 instance=ExtResource("4_cgvny")]
 
 [node name="PromptManager" type="Node2D" parent="." unique_id=1291331343]
-script = ExtResource("4_i1xcm")
+script = ExtResource("5_cx4fd")
 
+[node name="MenuPanel" parent="." unique_id=1220627684 instance=ExtResource("7_fm2uc")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="MainLayout/MenuPanelButton" to="MainLayout/MenuPanelButton" method="_on_pressed"]
 [connection signal="text_submitted" from="MainLayout/InputLayout/InputText" to="." method="_on_input_text_text_submitted"]
 [connection signal="pressed" from="MainLayout/InputLayout/SendButton" to="." method="_on_send_button_pressed"]

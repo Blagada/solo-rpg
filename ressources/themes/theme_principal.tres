@@ -1,0 +1,21 @@
+[gd_resource type="Theme" format=3 uid="uid://2sn65p5a048g"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_okea5"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.19090384, 0.17956921, 0.17956921, 1)
+border_color = Color(0.8001019, 0.8001019, 0.8001019, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4v7s"]
+content_margin_left = 30.0
+content_margin_top = 30.0
+content_margin_right = 30.0
+content_margin_bottom = 30.0
+bg_color = Color(0.13171524, 0.12822598, 0.12822598, 1)
+
+[resource]
+Panel/styles/panel = SubResource("StyleBoxFlat_okea5")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_g4v7s")
+TabBar/constants/tab_separation = 5

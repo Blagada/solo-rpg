@@ -41,4 +41,4 @@ func _on_start_pressed() -> void:
 	GameData.type_tarot = TAROT_PAR_DEFAUT
 	GameData.tirage_auto = tarot_check.button_pressed
 
-	get_tree().change_scene_to_file("res://scenes/solo_rpg.tscn")
+	get_tree().change_scene_to_file("res://scenes/Principales/solo_rpg.tscn")

@@ -14,8 +14,8 @@ class_name GameManager
 @onready var client: Node = claude_client if utiliser_claude else gemini_client
 
 
-
 var system_prompt: String = ""
+
 
 func _ready():
 	# 1. On connecte le signal

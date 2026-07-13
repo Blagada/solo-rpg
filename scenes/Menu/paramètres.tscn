@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://dnq8eotj1vb45"]
+
+[ext_resource type="Theme" uid="uid://2sn65p5a048g" path="res://ressources/themes/theme_principal.tres" id="1_bgoos"]
+[ext_resource type="Script" uid="uid://b7skt618b0382" path="res://scripts/ui/options_taille.gd" id="2_am7jt"]
+[ext_resource type="Script" uid="uid://hya7bw80oner" path="res://scripts/ui/options_police_caractere.gd" id="3_4if5q"]
+
+[node name="Paramètres" type="PanelContainer" unique_id=1299370874]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_bgoos")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=436110803]
+layout_mode = 2
+
+[node name="ParametresContainer" type="VBoxContainer" parent="ScrollContainer" unique_id=1704815357]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Titre" type="Label" parent="ScrollContainer/ParametresContainer" unique_id=1305779420]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Paramètres"
+
+[node name="TailleTexte" type="HBoxContainer" parent="ScrollContainer/ParametresContainer" unique_id=114098519]
+layout_mode = 2
+
+[node name="TitreTaille" type="Label" parent="ScrollContainer/ParametresContainer/TailleTexte" unique_id=983321131]
+layout_mode = 2
+text = "Taille de police : "
+
+[node name="SliderTaille" type="HSlider" parent="ScrollContainer/ParametresContainer/TailleTexte" unique_id=1633663501]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 14.0
+max_value = 45.0
+value = 16.0
+script = ExtResource("2_am7jt")
+
+[node name="PoliceCaractereTexte" type="HBoxContainer" parent="ScrollContainer/ParametresContainer" unique_id=383530859]
+layout_mode = 2
+
+[node name="TitrePoliceCaractere" type="Label" parent="ScrollContainer/ParametresContainer/PoliceCaractereTexte" unique_id=1630064981]
+layout_mode = 2
+text = "Police de caractère : "
+
+[node name="OptionsPoliceCaractere" type="OptionButton" parent="ScrollContainer/ParametresContainer/PoliceCaractereTexte" unique_id=819827542]
+layout_mode = 2
+script = ExtResource("3_4if5q")
+
+[node name="ExplicationUnivers" type="Label" parent="ScrollContainer/ParametresContainer" unique_id=765346417]
+layout_mode = 2
+text = "Vous aimez l'univers dans lequel ce passe votre aventure? Vous pouvez la sauvegarder pour en vivre d'autre."
+autowrap_mode = 3
+
+[node name="SauvegardeUnivers" type="Button" parent="ScrollContainer/ParametresContainer" unique_id=902591978]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Sauvegarder l'univers"
+
+[connection signal="value_changed" from="ScrollContainer/ParametresContainer/TailleTexte/SliderTaille" to="ScrollContainer/ParametresContainer/TailleTexte/SliderTaille" method="_on_taille_slider_value_changed"]
+[connection signal="item_selected" from="ScrollContainer/ParametresContainer/PoliceCaractereTexte/OptionsPoliceCaractere" to="ScrollContainer/ParametresContainer/PoliceCaractereTexte/OptionsPoliceCaractere" method="_on_police_options_item_selected"]

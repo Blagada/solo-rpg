@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://t1dusr0vbo0u"]
+
+[ext_resource type="Script" uid="uid://8jm15v3sj7x5" path="res://scripts/ui/menu_panel.gd" id="1_311wt"]
+[ext_resource type="PackedScene" uid="uid://hwtoa5ejbc65" path="res://scenes/Menu/fiche.tscn" id="1_m83ry"]
+[ext_resource type="PackedScene" uid="uid://dnq8eotj1vb45" path="res://scenes/Menu/paramètres.tscn" id="2_311wt"]
+
+[node name="MenuPanel" type="Control" unique_id=1220627684]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 77.592896
+offset_top = 51.0
+offset_right = -82.78516
+offset_bottom = -46.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_311wt")
+
+[node name="TabContainer" type="TabContainer" parent="." unique_id=1291140542]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+current_tab = 0
+
+[node name="Fiche" type="TabBar" parent="TabContainer" unique_id=418507716]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Fiche" parent="TabContainer/Fiche" unique_id=2139778102 instance=ExtResource("1_m83ry")]
+layout_mode = 1
+theme = null
+
+[node name="Paramètres" type="TabBar" parent="TabContainer" unique_id=1288561917]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Paramètres" parent="TabContainer/Paramètres" unique_id=137849783 instance=ExtResource("2_311wt")]
+layout_mode = 1
+
+[node name="CloseButton" type="Button" parent="." unique_id=1705678385]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -65.0
+offset_top = 2.0
+offset_bottom = 33.0
+grow_horizontal = 0
+text = "Fermer"
+
+[connection signal="pressed" from="CloseButton" to="." method="_on_close_button_pressed"]

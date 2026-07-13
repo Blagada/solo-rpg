@@ -1,0 +1,109 @@
+[gd_scene format=3 uid="uid://hwtoa5ejbc65"]
+
+[ext_resource type="Theme" uid="uid://2sn65p5a048g" path="res://ressources/themes/theme_principal.tres" id="1_gnlv8"]
+[ext_resource type="Script" uid="uid://dwwyt0tmpacf" path="res://scripts/ui/fiche.gd" id="2_agbv0"]
+
+[node name="Fiche" type="PanelContainer" unique_id=80000053]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_gnlv8")
+script = ExtResource("2_agbv0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=410147361]
+layout_mode = 2
+
+[node name="Titre" type="Label" parent="VBoxContainer" unique_id=1297631271]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Fiche
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="Univers" type="HBoxContainer" parent="VBoxContainer" unique_id=1515479834]
+layout_mode = 2
+
+[node name="TitreUnivers" type="Label" parent="VBoxContainer/Univers" unique_id=469691293]
+layout_mode = 2
+text = "Univers : "
+
+[node name="ValeurUnivers" type="Label" parent="VBoxContainer/Univers" unique_id=1030116130]
+layout_mode = 2
+
+[node name="Nom" type="HBoxContainer" parent="VBoxContainer" unique_id=1896468428]
+layout_mode = 2
+
+[node name="TitreNom" type="Label" parent="VBoxContainer/Nom" unique_id=1137573965]
+layout_mode = 2
+text = "Nom : "
+
+[node name="ValeurNom" type="Label" parent="VBoxContainer/Nom" unique_id=1648740662]
+layout_mode = 2
+
+[node name="Age" type="HBoxContainer" parent="VBoxContainer" unique_id=2074159242]
+layout_mode = 2
+
+[node name="TitreAge" type="Label" parent="VBoxContainer/Age" unique_id=1876207804]
+layout_mode = 2
+text = "Âge : "
+
+[node name="ValeurAge" type="Label" parent="VBoxContainer/Age" unique_id=967250020]
+layout_mode = 2
+
+[node name="Gnre" type="HBoxContainer" parent="VBoxContainer" unique_id=287413828]
+layout_mode = 2
+
+[node name="TitreGenre" type="Label" parent="VBoxContainer/Gnre" unique_id=1275541978]
+layout_mode = 2
+text = "Genre : "
+
+[node name="ValeurGenre" type="Label" parent="VBoxContainer/Gnre" unique_id=385982201]
+layout_mode = 2
+
+[node name="Profession" type="HBoxContainer" parent="VBoxContainer" unique_id=558467530]
+layout_mode = 2
+
+[node name="TitreProfession" type="Label" parent="VBoxContainer/Profession" unique_id=993956865]
+layout_mode = 2
+text = "Profession : "
+
+[node name="ValeurProfession" type="Label" parent="VBoxContainer/Profession" unique_id=1881767252]
+layout_mode = 2
+
+[node name="SplitScreen" type="HSplitContainer" parent="VBoxContainer" unique_id=899465770]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InventaireContainer" type="Panel" parent="VBoxContainer/SplitScreen" unique_id=620556753]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitreInventaire" type="Label" parent="VBoxContainer/SplitScreen/InventaireContainer" unique_id=121835767]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -240.0
+offset_right = 240.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Inventaire"
+
+[node name="RelationContainer" type="Panel" parent="VBoxContainer/SplitScreen" unique_id=1459721165]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitreInventaire" type="Label" parent="VBoxContainer/SplitScreen/RelationContainer" unique_id=1657256580]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -240.0
+offset_right = 240.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Relations"

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://sfti4yvp3s7u"]
 
-[ext_resource type="Script" uid="uid://cntxvhrx00518" path="res://scripts/ui/main_menu.gd" id="1_l6cm7"]
+[ext_resource type="Script" uid="uid://cntxvhrx00518" path="res://scripts/ui/main_menu.gd" id="1_5p5ak"]
 
 [node name="MainMenu" type="Control" unique_id=131185639]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_l6cm7")
+script = ExtResource("1_5p5ak")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2068015739]
 layout_mode = 1
@@ -24,6 +24,7 @@ grow_vertical = 2
 
 [node name="Title" type="Label" parent="VBoxContainer" unique_id=993764574]
 layout_mode = 2
+theme_type_variation = &"HeaderLarge"
 text = "Solo RPG"
 horizontal_alignment = 1
 

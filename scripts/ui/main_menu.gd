@@ -15,10 +15,10 @@ func _on_new_pressed() -> void:
 	GameData.historique_partie = []
 	GameData.etat_partie = ""
 	# On change de scène pour aller vers la scène de configuration
-	get_tree().change_scene_to_file("res://scenes/configuration_jeu.tscn")
+	get_tree().change_scene_to_file("res://scenes/Principales/configuration_jeu.tscn")
 
 
 func _on_continue_pressed() -> void:
 	# Appel les données de l'ancienne partie, et envoie directement à la scène de conversation
 	SaveManager.charger_partie()
-	get_tree().change_scene_to_file("res://scenes/solo_rpg.tscn")
+	get_tree().change_scene_to_file("res://scenes/Principales/solo_rpg.tscn")
