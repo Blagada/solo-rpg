@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="TarotCards" format=3 uid="uid://b8i3r0vcxqwdj"]
+
+[ext_resource type="Script" uid="uid://dhuntvh65sunn" path="res://ressources/tarot_cards.gd" id="1_qmc78"]
+
+[resource]
+script = ExtResource("1_qmc78")
+nom = "Le monde"
+metadata/_custom_type_script = "uid://dhuntvh65sunn"

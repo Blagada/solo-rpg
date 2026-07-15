@@ -36,8 +36,8 @@ func _on_start_pressed() -> void:
 	var genre = gender_options.get_item_text(gender_options.selected)
 	GameData.genre_perso = genres_possibles[randi() % genres_possibles.size()] if genre == "Aléatoire" else genre
 
-	var age = clamp(round(randfn(32.5, 12.5)), 13, 99)
-	GameData.age_perso = int(age)
+	var age = randfn(32.5, 12.5) if age_random_check.button_pressed else age_input.value
+	GameData.age_perso = int(clamp(round(age), 13, 99))
 	GameData.precisions = univers_precision.text
 	GameData.type_tarot = TAROT_PAR_DEFAUT
 	GameData.tirage_auto = tarot_check.button_pressed

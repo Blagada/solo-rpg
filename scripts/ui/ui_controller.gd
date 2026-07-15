@@ -19,7 +19,8 @@ func afficher_message(auteur: String, message: String):
 	elif auteur == "Vous":
 		couleur = COULEUR_JOUEUR
 
-	var message_formate = _convertir_markdown(message)
+	var message_nettoye = message.replace("\\n\\n", "\n\n").replace("\\n", "\n")
+	var message_formate = _convertir_markdown(message_nettoye)
 	chat_display.append_text("[color=" + couleur + "][b]" + auteur + " :[/b] " + message_formate + "[/color]\n\n")
 
 

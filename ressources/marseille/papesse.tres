@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="TarotCards" format=3 uid="uid://b03qrbuv1pn15"]
+
+[ext_resource type="Script" uid="uid://dhuntvh65sunn" path="res://ressources/tarot_cards.gd" id="1_bwjl3"]
+
+[resource]
+script = ExtResource("1_bwjl3")
+nom = "La papesse"
+metadata/_custom_type_script = "uid://dhuntvh65sunn"

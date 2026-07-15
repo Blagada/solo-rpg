@@ -29,9 +29,10 @@ const DIRECTIVES_NARRATIVES = """Directives narratives strictes :
 const DIRECTIVES_TAROT = """Mécanique du Tarot :
 - Un tirage n'a lieu qu'aux moments charnières de l'histoire : arrivée dans un lieu clé, rencontre déterminante, choix important, obstacle majeur. Jamais à chaque message anodin.
 - %s
-- Quand un tirage a lieu, nomme explicitement la carte dans ta narration (ex : "La carte du Fou apparaît...").
+- N'énonce PAS mécaniquement le nom de la carte dans ta narration — le système l'annonce séparément. Reste dans l'ambiance et les sensations, laisse le nom de la carte parler par ses conséquences plutôt que d'être cité directement.
 - Interprète le sens réel de la carte selon le tarot choisi (précisé plus bas) et fais-en découler un effet concret sur la suite de l'histoire — une carte annonçant un renversement doit se traduire par un vrai retournement de situation, pas une mention décorative sans suite.
-- Si le champ "etat" contient déjà une carte récente encore pertinente, tiens-en compte pour rester cohérent plutôt que de l'ignorer."""
+- Si le champ "etat" contient déjà une carte récente encore pertinente, tiens-en compte pour rester cohérent plutôt que de l'ignorer.
+- Si moment_charniere est true ET que le mode est manuel (le joueur tire), TERMINE ta narration en interrompant l'action pour inviter explicitement le joueur à tirer sa carte — n'avance PAS l'histoire plus loin ce tour-ci."""
 
 const FORMAT_REPONSE = """Format de réponse OBLIGATOIRE : réponds UNIQUEMENT avec un objet JSON valide, sans aucun texte avant ou après, de cette forme exacte :
 {"narration": "ton texte narratif pour le joueur ici", "etat": "résumé condensé et autonome de la situation actuelle"}
@@ -51,12 +52,11 @@ const DIRECTIVES_FORMATAGE = """Formatage à utiliser dans ta narration :
 # --- FONCTIONS ---
 
 func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur: int, tarot: String, tirage_auto: bool, etat_partie: String, utiliser_tools: bool = false) -> String:
-	var mode_tirage = "L'IA tire les cartes automatiquement." if tirage_auto else "Le joueur tire ses propres cartes et te les communique."
+	var mode_tirage = "Tu choisis toi-même la carte tirée et la remplis dans le champ carte_tiree du tool." if tirage_auto else "C'est le JOUEUR qui tire sa carte : au moment du tirage, demande-lui explicitement : Tire une carte. Ensuite attends sa réponse dans son prochain message, et rapporte EXACTEMENT le nom qu'il t'a donné dans le champ carte_tiree — ne choisis jamais la carte à sa place."
 	var univers_affiche = univers if univers != "" else "à inventer librement, cohérent avec le reste"
 	var genre_affiche = genre if genre != "" else "un genre de ton choix"
 	var etat_affiche = etat_partie if etat_partie != "" else "Aucun événement encore. L'aventure commence."
 	var bloc_format = INSTRUCTIONS_TOOL_USE if utiliser_tools else FORMAT_REPONSE
-
 	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + (DIRECTIVES_TAROT % mode_tirage) + "\n\n" + bloc_format + "\n\n" + DIRECTIVES_FORMATAGE + """
 	
 	Paramètres de la partie :

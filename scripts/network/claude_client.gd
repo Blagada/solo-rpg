@@ -68,7 +68,8 @@ func _charger_cle_api() -> String:
 	return ""
 
 
-func envoyer_requete(historique: Array, system_prompt: String, type_tarot: String) -> void:
+func envoyer_requete(historique: Array, system_prompt: String, type_tarot: String, forcer_carte: bool = false) -> void:
+
 	if api_key == "":
 		erreur_recue.emit(-1)
 		return
@@ -78,7 +79,7 @@ func envoyer_requete(historique: Array, system_prompt: String, type_tarot: Strin
 		"max_tokens": MAX_TOKENS,
 		"system": system_prompt,
 		"messages": _traduire_vers_claude(historique),
-		"tools": _construire_tools(type_tarot),
+		"tools": _construire_tools(type_tarot, forcer_carte),
 		"tool_choice": {"type": "tool", "name": "repondre_joueur"}
 	}
 	var json_body = JSON.stringify(body)
@@ -101,9 +102,12 @@ func _traduire_vers_claude(historique: Array) -> Array:
 	return contenu
 
 
-func _construire_tools(type_tarot: String) -> Array:
+func _construire_tools(type_tarot: String, forcer_carte: bool = false) -> Array:
 	var noms_cartes = _charger_noms_cartes(type_tarot)
-
+	var champs_requis = ["narration", "etat", "moment_charniere"]
+	if forcer_carte:
+		champs_requis.append("carte_tiree")
+	
 	return [{
 		"name": "repondre_joueur",
 		"description": "Utilise CET outil pour structurer CHAQUE réponse au joueur, sans exception.",
@@ -126,6 +130,10 @@ func _construire_tools(type_tarot: String) -> Array:
 						"consequence_narrative": {"type": "string"}
 					}
 				},
+				"moment_charniere": {
+					"type": "boolean",
+					"description": "true si CE tour correspond à un moment charnière justifiant un tirage de tarot (rencontre déterminante, choix important, obstacle majeur), false sinon."
+				},
 				"univers_invente": {
 					"type": "string",
 					"description": "Uniquement si l'univers n'était pas déjà précisé par le joueur : indique en quelques mots l'univers que tu viens d'inventer pour cette partie."
@@ -133,7 +141,7 @@ func _construire_tools(type_tarot: String) -> Array:
 				"nom_personnage": {"type": "string", "description": "Le nom du personnage joueur, dès qu'il est établi ou confirmé dans la narration."},
 				"profession": {"type": "string", "description": "La profession/le métier du personnage, dès qu'il est établi ou confirmé dans la narration."}
 			},
-			"required": ["narration", "etat"]
+			"required": champs_requis
 		}
 	}]
 
@@ -170,19 +178,18 @@ func _on_api_request_request_completed(_result: int, response_code: int, _header
 
 		for bloc in blocs:
 			if bloc["type"] == "tool_use" and bloc["name"] == "repondre_joueur":
-				narration = bloc["input"]["narration"]
-				nouvel_etat = bloc["input"]["etat"]
+				narration = bloc["input"].get("narration", "")
+				nouvel_etat = bloc["input"].get("etat", "")
 				if bloc["input"].has("carte_tiree"):
 					tools_declenches["tarot"] = bloc["input"]["carte_tiree"]
-					print("--- CARTE TIRÉE ---")
-					print(bloc["input"]["carte_tiree"]["nom_carte"])
 				if bloc["input"].has("univers_invente"):
 					tools_declenches["univers_invente"] = bloc["input"]["univers_invente"]
-					print("--- Univers inventé ---" + bloc["input"]["univers_invente"])
 				if bloc["input"].has("nom_personnage"):
 					tools_declenches["nom_personnage"] = bloc["input"]["nom_personnage"]
 				if bloc["input"].has("profession"):
 					tools_declenches["profession"] = bloc["input"]["profession"]
+				if bloc["input"].has("moment_charniere"):
+					tools_declenches["moment_charniere"] = bloc["input"]["moment_charniere"]
 
 		reponse_recue.emit(narration, nouvel_etat, tools_declenches)
 	else:
