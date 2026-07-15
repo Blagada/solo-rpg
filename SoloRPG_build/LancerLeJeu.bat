@@ -1,2 +1,0 @@
-set CLAUDE_API_KEY=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
-start "" "SoloRPG.exe"
