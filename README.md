@@ -1,6 +1,6 @@
 # Feuille de route — Solo RPG
 
-## ✅ Fait (aujourd'hui)
+## ✅ Fait (session 1)
 - Sécurisation de la clé API (fichier `secrets.cfg`, hors Git)
 - État de partie persistant (`etat_partie`) — mémoire longue indépendante de l'historique tronqué
 - Historique réduit à 2 tours (4 messages) au lieu de 3
@@ -71,16 +71,13 @@
 - **Bug de crash trouvé et corrigé** : accès direct `bloc["input"]["etat"]` plantait si Claude omettait exceptionnellement un champ obligatoire → remplacé par `.get(clé, defaut)` partout dans `_on_api_request_request_completed`, plus robuste même si Claude déroge au schema
 - **Bug de double-envoi trouvé (fix écrit, pas encore testé)** : `InputText` était connecté à la fois à `_on_input_text_text_submitted` (touche Entrée) et au bouton Envoyer, causant un envoi en double sur une seule touche Entrée dans certains cas — expliquait le décalage d'un tour observé sur `attente_tirage_manuel` (consommé par le 1er envoi fantôme avant le vrai message du joueur). Fix : variable `envoi_en_cours` qui bloque les envois superposés, réinitialisée dans `_on_reponse_ia`/`_on_erreur_ia`.
 
-## ⚠️ À reprendre demain en priorité
+## ⚠️ À reprendre en priorité
 - **Retester le mode tirage manuel après le fix `envoi_en_cours`** — pas encore confirmé que ça règle bien le décalage du flag `attente_tirage_manuel`. Vérifier avec les prints de debug déjà en place (`FORCER_CARTE ENVOYÉ`, `FLAG ACTIVÉ`) que la séquence est maintenant : moment_charniere détecté → message Système → JOUEUR répond avec le nom d'une carte → forcer_carte=true correctement appliqué à CE message précis.
 - **Retirer les prints de debug une fois confirmé** (dans `game_manager.gd` et `claude_client.gd`)
 - **Vérifier si le double-signal était bien la vraie cause** — si le bug persiste après le fix `envoi_en_cours`, creuser pourquoi `_on_input_text_text_submitted` ET `_on_send_button_pressed` se déclenchaient tous les deux sur une touche Entrée (vérifier dans l'éditeur si le bouton Envoyer a le focus par défaut / est marqué comme action par défaut du champ de texte)
 
 ## 🐛 Autre bug noté (pas urgent)
 - Les messages Système (moment charnière, carte tirée, aventure reprise) ne sont pas inclus dans `historique_partie` sauvegardé — volontaire pour l'API (pas besoin de les renvoyer à Claude), mais ça crée un trou visuel : recharger une partie ne réaffiche pas ces messages dans le chat. À décider : les stocker séparément juste pour l'affichage, sans les envoyer à l'API.
-
-## 🐛 Bugs trouvés lors du test avec un ami
-- **Âge toujours aléatoire, peu importe le choix du joueur** — `_on_start_pressed()` dans `configuration_jeu.gd` calculait `randfn(...)` sans jamais vérifier `age_random_check.button_pressed` (condition perdue lors de l'ajout de la distribution en cloche). Fix : `var age = randfn(32.5, 12.5) if age_random_check.button_pressed else age_input.value`
 
 ## ✅ Fait (session export & test externe)
 - **Mode tirage manuel du tarot confirmé fonctionnel** : `forcer_carte` s'applique correctement au bon tour une fois le bug de double-envoi réglé (`envoi_en_cours`). Test réel validé : carte nommée par le joueur ("Le monde") correctement capturée et affichée par le Système.
