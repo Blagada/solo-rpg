@@ -1,5 +1,6 @@
 extends Control
 class_name GameManager
+
 @export var utiliser_claude: bool = false
 
 # --- UI ---
@@ -20,7 +21,7 @@ var attente_tirage_manuel: bool = false
 # On s'assure de ne pas envoyer plusieurs requêtes si le joueur pèse plusieurs fois sur Enter ou Envoyer
 var envoi_en_cours: bool = false
 
-func _ready():
+func _ready()-> void:
 	# 1. On connecte le signal
 	client.reponse_recue.connect(_on_reponse_ia)
 	client.erreur_recue.connect(_on_erreur_ia)
@@ -30,38 +31,38 @@ func _ready():
 	_regenerer_system_prompt()
 
 	# 3. On prépare le contenu initial
-	if GameData.historique_partie.is_empty():
+	if GameData.conversation_history.is_empty():
 		# Nouvelle aventure : on lance le premier tour
 		ui.afficher_message("Système ", "La partie peut commencer.")
-		var messages = prompt_manager.construire_contenu([])
-		client.envoyer_requete(messages, system_prompt, GameData.type_tarot, attente_tirage_manuel)
+		var messages: Array[Dictionary] = prompt_manager.construire_contenu([])
+		client.envoyer_requete(messages, system_prompt, GameData.config_tarot_model, attente_tirage_manuel)
 		attente_tirage_manuel = false
 	else:
 		# Aventure chargée : on réaffiche l'historique, aucun appel API
 		ui.afficher_message("Système ", "Aventure reprise.")
-		for message in GameData.historique_partie:
-			var auteur = "Vous" if message["role"] == "user" else "DM"
+		for message: Dictionary in GameData.conversation_history:
+			var auteur: String = "Vous" if message["role"] == "user" else "DM"
 			ui.afficher_message(auteur, message["text"])
 
 
 func _regenerer_system_prompt() -> void:
 	system_prompt = prompt_manager.generer_system_prompt(
-		GameData.univers_choisi,
-		GameData.precisions,
-		GameData.genre_perso,
-		GameData.age_perso,
-		GameData.type_tarot,
-		GameData.tirage_auto,
-		GameData.etat_partie,
+		GameData.config_universe,
+		GameData.config_precisions,
+		GameData.character_gender,
+		GameData.character_age,
+		GameData.config_tarot_model,
+		GameData.config_is_auto_draw,
+		GameData.world_current_state,
 		utiliser_claude
 	)
 
 
-func _on_reponse_ia(texte_ia: String, nouvel_etat: String, tools_declenches: Dictionary):
+func _on_reponse_ia(texte_ia: String, nouvel_etat: String, tools_declenches: Dictionary) -> void:
 	ui.basculer_indicateur_pense(false)
 	envoi_en_cours = false
 
-	if tools_declenches.get("moment_charniere", false) and not GameData.tirage_auto and not tools_declenches.has("tarot"):
+	if tools_declenches.get("moment_charniere", false) and not GameData.config_is_auto_draw and not tools_declenches.has("tarot"):
 		ui.afficher_message("Système", "🎴 Moment charnière — tire une carte et dis-moi laquelle.")
 		attente_tirage_manuel = true
 	
@@ -70,29 +71,29 @@ func _on_reponse_ia(texte_ia: String, nouvel_etat: String, tools_declenches: Dic
 		ui.afficher_message("Système", "Carte tirée : " + carte)
 
 	if nouvel_etat != "":
-		GameData.etat_partie = nouvel_etat
+		GameData.world_current_state = nouvel_etat
 		_regenerer_system_prompt()
 
-	if GameData.univers_choisi == "" and tools_declenches.has("univers_invente"):
-		GameData.univers_choisi = tools_declenches["univers_invente"]
+	if GameData.config_universe == "" and tools_declenches.has("univers_invente"):
+		GameData.config_universe = tools_declenches["univers_invente"]
 	if tools_declenches.has("nom_personnage"):
-		GameData.nom_perso = tools_declenches["nom_personnage"]
+		GameData.character_name = tools_declenches["nom_personnage"]
 	if tools_declenches.has("profession"):
-		GameData.profession_perso = tools_declenches["profession"]
+		GameData.character_profession = tools_declenches["profession"]
 
 	ui.afficher_message("DM", texte_ia)
-	GameData.historique_partie.append({"role": "assistant", "text": texte_ia})
+	GameData.conversation_history.append({"role": "assistant", "text": texte_ia})
 	SaveManager.sauvegarder_partie()
 
-func _on_send_button_pressed():
+func _on_send_button_pressed() -> void:
 	_gerer_envoi()
 
 
-func _on_input_text_text_submitted(_text: String):
+func _on_input_text_text_submitted(_text: String) -> void:
 	_gerer_envoi()
 
 
-func _gerer_envoi():
+func _gerer_envoi() -> void:
 	# Empêche de faire un appel lorsqu'il y a un envoi en cours
 	if envoi_en_cours:
 		return
@@ -105,11 +106,11 @@ func _gerer_envoi():
 		ui.basculer_indicateur_pense(true)
 
 		# 1. On stocke le message du joueur (format neutre)
-		GameData.historique_partie.append({"role": "user", "text": texte_joueur})
+		GameData.conversation_history.append({"role": "user", "text": texte_joueur})
 
-		var contenu_final = prompt_manager.construire_contenu(GameData.historique_partie)
+		var contenu_final = prompt_manager.construire_contenu(GameData.conversation_history)
 
-		client.envoyer_requete(contenu_final, system_prompt, GameData.type_tarot, attente_tirage_manuel)
+		client.envoyer_requete(contenu_final, system_prompt, GameData.config_tarot_model, attente_tirage_manuel)
 		attente_tirage_manuel = false
 
 		# Repositionne le focus sur le champ de saisie après avoir fait un envoi
@@ -118,7 +119,7 @@ func _gerer_envoi():
 		input_text.grab_focus()
 
 
-func _on_erreur_ia(code):
+func _on_erreur_ia(code: int) -> void:
 	# C'est ici que tu vas enfin voir les erreurs en rouge
 	printerr("Code erreur reçu : ", code)
 	envoi_en_cours = false

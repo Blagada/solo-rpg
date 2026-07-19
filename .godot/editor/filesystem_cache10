@@ -1,7 +1,8 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1784474532
+::res://::1784485746
 export_presets.cfg::TextFile::-1::1784073355::0::1::::<><><>0<>0<><>::
 icon.svg::CompressedTexture2D::7341417961507117163::1783446923::1783446927::1::::<><><>0<>0<>d05f45cf051e39e8b2d8ad09dc47ac15<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
+README.md::TextFile::-1::1784474751::0::1::::<><><>0<>0<><>::
 secrets.cfg::TextFile::-1::1784146368::0::1::::<><><>0<>0<><>::
 ::res://assets/::1783897393
 ::res://assets/fonts/::1783897399
@@ -80,8 +81,8 @@ fou.tres::Resource/TarotCards::1126365343905925707::1783738807::0::1::::<><><>0<
 monde.tres::Resource/TarotCards::4720899325721399479::1784071469::0::1::::<><><>0<>0<><>::uid://dhuntvh65sunn::::res://ressources/tarot_cards.gd
 pape.tres::Resource/TarotCards::9079755527484571051::1784071447::0::1::::<><><>0<>0<><>::uid://dhuntvh65sunn::::res://ressources/tarot_cards.gd
 papesse.tres::Resource/TarotCards::4199946266547163646::1784071435::0::1::::<><><>0<>0<><>::uid://dhuntvh65sunn::::res://ressources/tarot_cards.gd
-::res://ressources/themes/::1784146368
-theme_principal.tres::Theme::1933103858553616676::1784146368::0::1::::<><><>0<>0<><>::
+::res://ressources/themes/::1784474559
+theme_principal.tres::Theme::1933103858553616676::1784474559::0::1::::<><><>0<>0<><>::
 ::res://scenes/::1783888854
 ::res://scenes/Clients/::1783820838
 claude_client.tscn::PackedScene::869924316410368921::1783739452::0::1::::<><><>0<>0<><>::uid://djjhc7md5m1tj::::res://scripts/network/claude_client.gd
@@ -90,9 +91,9 @@ gemini_client.tscn::PackedScene::5655898338771055205::1783820838::0::1::::<><><>
 fiche.tscn::PackedScene::537916886570717020::1783905463::0::1::::<><><>0<>0<><>::uid://2sn65p5a048g::::res://ressources/themes/theme_principal.tres<>uid://dwwyt0tmpacf::::res://scripts/ui/fiche.gd
 menu_panel.tscn::PackedScene::1387480690430549462::1783907415::0::1::::<><><>0<>0<><>::uid://8jm15v3sj7x5::::res://scripts/ui/menu_panel.gd<>uid://hwtoa5ejbc65::::res://scenes/Menu/fiche.tscn<>uid://dnq8eotj1vb45::::res://scenes/Menu/paramètres.tscn
 paramètres.tscn::PackedScene::8106758631498270500::1783906809::0::1::::<><><>0<>0<><>::uid://2sn65p5a048g::::res://ressources/themes/theme_principal.tres<>uid://dkh6pp847rkyp::::res://scripts/ui/parametres.gd
-::res://scenes/Principales/::1784146368
+::res://scenes/Principales/::1784474775
 configuration_jeu.tscn::PackedScene::7654580043425824072::1783906916::0::1::::<><><>0<>0<><>::uid://75f0fymcwvcj::::res://scripts/ui/configuration_jeu.gd<>uid://2sn65p5a048g::::res://ressources/themes/theme_principal.tres
-main_menu.tscn::PackedScene::1274890544696455308::1784146368::0::1::::<><><>0<>0<><>::uid://cntxvhrx00518::::res://scripts/ui/main_menu.gd<>uid://2sn65p5a048g::::res://ressources/themes/theme_principal.tres
+main_menu.tscn::PackedScene::1274890544696455308::1784474775::0::1::::<><><>0<>0<><>::uid://cntxvhrx00518::::res://scripts/ui/main_menu.gd<>uid://2sn65p5a048g::::res://ressources/themes/theme_principal.tres
 solo_rpg.tscn::PackedScene::8197083753792219644::1783909108::0::1::::<><><>0<>0<><>::uid://2sn65p5a048g::::res://ressources/themes/theme_principal.tres<>uid://dmkr1owohtgi0::::res://scripts/core/game_manager.gd<>uid://dwhif1yiplivo::::res://scripts/ui/ui_controller.gd<>uid://cmt024d4nejhd::::res://scenes/Clients/gemini_client.tscn<>uid://cf7smqmlykseq::::res://scripts/ui/menu_panel_button.gd<>uid://mnnr5rm6avxh::::res://scenes/Clients/claude_client.tscn<>uid://b3y37htt7mhq::::res://scripts/core/prompt_manager.gd<>uid://t1dusr0vbo0u::::res://scenes/Menu/menu_panel.tscn
 ::res://scripts/::1783634002
 api_tester.gd::GDScript::6280113248023921140::1783633569::0::1::::<>Node<><>0<>0<><>::

@@ -1,4 +1,5 @@
 extends PanelContainer
+class_name FichePerso
 
 @onready var valeur_univers: Label = $VBoxContainer/Univers/ValeurUnivers
 @onready var valeur_nom: Label = $VBoxContainer/Nom/ValeurNom
@@ -10,8 +11,15 @@ func _ready() -> void:
 	actualiser()
 
 func actualiser() -> void:
-	valeur_univers.text = GameData.univers_choisi + (", " + GameData.precisions if GameData.precisions != "" else "")
-	valeur_age.text = str(GameData.age_perso)
-	valeur_genre.text = GameData.genre_perso
-	valeur_nom.text = GameData.nom_perso if GameData.nom_perso != "" else "À déterminer"
-	valeur_profession.text = GameData.profession_perso if GameData.profession_perso != "" else "À déterminer"
+	var univers_complet: String = GameData.config_universe
+	if GameData.config_precisions != "":
+		univers_complet += ", " + GameData.config_precisions
+	valeur_univers.text = univers_complet
+	
+	# Conversion sécurisée des types vers String pour le texte des Labels
+	valeur_age.text = str(GameData.character_age)
+	valeur_genre.text = GameData.character_gender
+	
+	# Gestion des valeurs par défaut
+	valeur_nom.text = GameData.character_name if GameData.character_name != "" else "À déterminer"
+	valeur_profession.text = GameData.character_profession if GameData.character_profession != "" else "À déterminer"

@@ -1,4 +1,5 @@
 extends Control
+class_name MenuFicheController
 
 @onready var fiche: PanelContainer = $TabContainer/Fiche/Fiche
 
@@ -8,7 +9,7 @@ func _ready() -> void:
 
 
 func _on_visibility_changed() -> void:
-	if visible:
+	if visible and fiche:
 		fiche.actualiser()
 
 

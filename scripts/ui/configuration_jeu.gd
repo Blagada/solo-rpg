@@ -1,4 +1,5 @@
 extends Control
+class_name ConfigurationJeu
 
 @onready var form_container: VBoxContainer = $VBoxContainer/FormContainer
 
@@ -9,7 +10,7 @@ extends Control
 @onready var age_random_check: CheckButton = $VBoxContainer/FormContainer/Age/AgeRandomCheck
 @onready var tarot_check: CheckButton = $VBoxContainer/FormContainer/TarotCheck
 
-const TAROT_PAR_DEFAUT = "marseille"
+
 
 func _ready() -> void:
 	_remplir_dropdown_univers()
@@ -23,23 +24,22 @@ func _remplir_dropdown_univers() -> void:
 
 	univers_options.add_item("Aléatoire")
 	univers_options.get_popup().add_separator("Univers général")
-	for nom in GameData.UNIVERS_PAR_DEFAUT:
+	for nom: String in GameData.AVAILABLE_UNIVERSES:
 		univers_options.add_item(nom)
 
 
 func _on_start_pressed() -> void:
-	var genres_possibles = ["masculin", "féminin", "neutre"]
+	var univers_selectionne: String = univers_options.get_item_text(univers_options.selected)
+	GameData.config_universe = GameData.AVAILABLE_UNIVERSES.pick_random() as String if univers_selectionne == "Aléatoire" else univers_selectionne
 
-	var univers = univers_options.get_item_text(univers_options.selected)
-	GameData.univers_choisi = GameData.UNIVERS_PAR_DEFAUT.pick_random() if univers == "Aléatoire" else univers
+	var genre_selectionne: String = gender_options.get_item_text(gender_options.selected)
+	GameData.character_gender = GameData.AVAILABLE_GENDERS.pick_random() as String if genre_selectionne == "Aléatoire" else genre_selectionne
 
-	var genre = gender_options.get_item_text(gender_options.selected)
-	GameData.genre_perso = genres_possibles[randi() % genres_possibles.size()] if genre == "Aléatoire" else genre
+	# Calcul de l'âge
+	var age: float = randfn(32.5, 12.5) if age_random_check.button_pressed else age_input.value
+	GameData.character_age = int(clamp(round(age), 13, 99))
 
-	var age = randfn(32.5, 12.5) if age_random_check.button_pressed else age_input.value
-	GameData.age_perso = int(clamp(round(age), 13, 99))
-	GameData.precisions = univers_precision.text
-	GameData.type_tarot = TAROT_PAR_DEFAUT
-	GameData.tirage_auto = tarot_check.button_pressed
+	GameData.config_precisions = univers_precision.text
+	GameData.config_is_auto_draw = tarot_check.button_pressed
 
 	get_tree().change_scene_to_file("res://scenes/Principales/solo_rpg.tscn")

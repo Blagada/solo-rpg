@@ -1,23 +1,23 @@
 extends Node
 
-const SAVE_PATH = "user://sauvegarde_partie.json"
+const SAVE_PATH: String = "user://sauvegarde_partie.json"
 
 func sauvegarder_partie() -> void:
 	# va chercher tous les paramètres de la partie en cours, l'état de la partie et aussi l'historique de conversation.
-	var data = {
-		"univers_choisi": GameData.univers_choisi,
-		"precisions": GameData.precisions,
-		"genre_perso": GameData.genre_perso,
-		"age_perso": GameData.age_perso,
-		"type_tarot": GameData.type_tarot,
-		"tirage_auto": GameData.tirage_auto,
-		"etat_partie": GameData.etat_partie,
-		"historique_partie": GameData.historique_partie,
-		"nom_perso": GameData.nom_perso,
-		"profession_perso": GameData.profession_perso
+	var data: Dictionary = {
+		"config_universe": GameData.config_universe,
+		"config_precisions": GameData.config_precisions,
+		"character_gender": GameData.character_gender,
+		"character_age": GameData.character_age,
+		"config_tarot_model": GameData.config_tarot_model,
+		"config_is_auto_draw": GameData.config_is_auto_draw,
+		"world_current_state": GameData.world_current_state,
+		"conversation_history": GameData.conversation_history,
+		"character_name": GameData.character_name,
+		"character_profession": GameData.character_profession
 	}
 	# Sauvegarde des donné (data) dans un JSON
-	var fichier = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var fichier: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if fichier:
 		fichier.store_string(JSON.stringify(data))
 		fichier.close()
@@ -33,26 +33,36 @@ func une_sauvegarde_existe() -> bool:
 func charger_partie() -> bool:
 	# Pas de sauvegarde
 	if not une_sauvegarde_existe():
+		push_error("Aucune sauvegarde trouvée.")
 		return false
 
 	# Renvoie les données de la dernière aventure, à partir du fichier JSON
-	var fichier = FileAccess.open(SAVE_PATH, FileAccess.READ)
-	var contenu = fichier.get_as_text()
+	var fichier: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if not fichier:
+		push_error("Erreur d'accès au fichier.")
+		return false
+
+	var contenu: String = fichier.get_as_text()
 	fichier.close()
 
-	var data = JSON.parse_string(contenu)
-	if data == null:
+	var data: Variant = JSON.parse_string(contenu)
+	if not data is Dictionary:
 		push_error("Sauvegarde corrompue.")
 		return false
 
-	GameData.univers_choisi = data.get("univers_choisi", "")
-	GameData.precisions = data.get("precisions", "")
-	GameData.genre_perso = data.get("genre_perso", "")
-	GameData.age_perso = data.get("age_perso", 25)
-	GameData.type_tarot = data.get("type_tarot", "marseille")
-	GameData.tirage_auto = data.get("tirage_auto", true)
-	GameData.etat_partie = data.get("etat_partie", "")
-	GameData.historique_partie = data.get("historique_partie", [])
-	GameData.nom_perso = data.get("nom_perso", "")
-	GameData.profession_perso = data.get("profession_perso", "")
+	GameData.config_universe = data.get("config_universe", "") as String
+	GameData.config_precisions = data.get("config_precisions", "") as String
+	GameData.config_tarot_model = data.get("config_tarot_model", "marseille") as String
+	GameData.config_is_auto_draw = data.get("config_is_auto_draw", true) as bool
+	
+	GameData.character_gender = data.get("character_gender", "") as String
+	GameData.character_age = data.get("character_age", 25) as int
+	GameData.character_name = data.get("character_name", "") as String
+	GameData.character_profession = data.get("character_profession", "") as String
+	
+	GameData.world_current_state = data.get("world_current_state", "") as String
+
+	var temp_history = data.get("conversation_history", [])
+	if temp_history is Array:
+		GameData.conversation_history.assign(temp_history)
 	return true

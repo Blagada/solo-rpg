@@ -3,7 +3,7 @@ class_name PromptManager
 
 # --- CONSTANTES DE CONFIGURATION (Modifiables ici) ---
 
-const BASE_SYSTEM = """Tu es le Maître du Jeu pour un JdR solo immersif.
+const BASE_SYSTEM: String = """Tu es le Maître du Jeu pour un JdR solo immersif.
 Règle d'or : Fais progresser l'histoire sans jamais tourner en boucle.
 Introduis toujours de nouveaux éléments, des conséquences directes aux actions, et fais évoluer le décor.
 Durant l'introduction, nomme le joueur, et assigne lui un métier en lien avec son âge (étudiant peut être un métier).
@@ -51,13 +51,22 @@ const DIRECTIVES_FORMATAGE = """Formatage à utiliser dans ta narration :
 
 # --- FONCTIONS ---
 
-func generer_system_prompt(univers: String, precision: String, genre: String, age_joueur: int, tarot: String, tirage_auto: bool, etat_partie: String, utiliser_tools: bool = false) -> String:
-	var mode_tirage = "Tu choisis toi-même la carte tirée et la remplis dans le champ carte_tiree du tool." if tirage_auto else "C'est le JOUEUR qui tire sa carte : au moment du tirage, demande-lui explicitement : Tire une carte. Ensuite attends sa réponse dans son prochain message, et rapporte EXACTEMENT le nom qu'il t'a donné dans le champ carte_tiree — ne choisis jamais la carte à sa place."
-	var univers_affiche = univers if univers != "" else "à inventer librement, cohérent avec le reste"
-	var genre_affiche = genre if genre != "" else "un genre de ton choix"
-	var etat_affiche = etat_partie if etat_partie != "" else "Aucun événement encore. L'aventure commence."
-	var bloc_format = INSTRUCTIONS_TOOL_USE if utiliser_tools else FORMAT_REPONSE
-	var template = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + (DIRECTIVES_TAROT % mode_tirage) + "\n\n" + bloc_format + "\n\n" + DIRECTIVES_FORMATAGE + """
+func generer_system_prompt(
+	univers: String,
+	precision: String,
+	genre: String,
+	age_joueur: int,
+	tarot: String,
+	tirage_auto: bool,
+	etat_partie: String,
+	utiliser_tools: bool = false
+) -> String:
+	var mode_tirage: String = "Tu choisis toi-même la carte tirée et la remplis dans le champ carte_tiree du tool." if tirage_auto else "C'est le JOUEUR qui tire sa carte : au moment du tirage, demande-lui explicitement : Tire une carte. Ensuite attends sa réponse dans son prochain message, et rapporte EXACTEMENT le nom qu'il t'a donné dans le champ carte_tiree — ne choisis jamais la carte à sa place."
+	var univers_affiche: String = univers if univers != "" else "à inventer librement, cohérent avec le reste"
+	var genre_affiche: String = genre if genre != "" else "un genre de ton choix"
+	var etat_affiche: String = etat_partie if etat_partie != "" else "Aucun événement encore. L'aventure commence."
+	var bloc_format: String = INSTRUCTIONS_TOOL_USE if utiliser_tools else FORMAT_REPONSE
+	var template: String = BASE_SYSTEM + "\n\n" + REGLES_JEU + "\n\n" + DIRECTIVES_NARRATIVES + "\n\n" + (DIRECTIVES_TAROT % mode_tirage) + "\n\n" + bloc_format + "\n\n" + DIRECTIVES_FORMATAGE + """
 	
 	Paramètres de la partie :
 	- Personnage : %d ans, %s.
@@ -77,21 +86,21 @@ func generer_system_prompt(univers: String, precision: String, genre: String, ag
 
 	return resultat
 
-func construire_contenu(historique_joueur: Array) -> Array:
+func construire_contenu(historique_joueur: Array[Dictionary]) -> Array[Dictionary]:
 	# Format neutre : chaque client (gemini_client, claude_client) traduit
 	# ensuite vers son propre format juste avant l'envoi.
-	var contenu = []
+	var contenu: Array[Dictionary] = []
 
 	if historique_joueur.is_empty():
 		# Premier tour : rien à raconter encore, on donne le coup d'envoi.
 		contenu.append({"role": "user", "text": "COMMENCE L'AVENTURE MAINTENANT. Plonge directement dans l'action."})
 	else:
 		# On garde les 6 derniers messages (3 tours de jeu) pour éviter les
-		# boucles répétitives ; l'état persistant (GameData.etat_partie)
+		# boucles répétitives ; l'état persistant (GameData.world_current_state)
 		# compense la perte de l'historique plus ancien.
-		var taille = historique_joueur.size()
-		var depart = max(0, taille - 4)  # 4 messages = 2 tours
-		for i in range(depart, taille):
+		var taille: int = historique_joueur.size()
+		var depart: int = max(0, taille - 4)  # 4 messages = 2 tours
+		for i:int in range(depart, taille):
 			contenu.append(historique_joueur[i])
 
 	return contenu
